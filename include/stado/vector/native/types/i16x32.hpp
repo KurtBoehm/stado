@@ -22,14 +22,14 @@ struct x16x32 : public si512 {
   // Constructor to broadcast the same value into all elements:
   x16x32(T i) : si512(_mm512_set1_epi16(i16(i))) {}
   // Constructor to build from all elements:
-  x16x32(T i0, T i1, T i2, T i3, T i4, T i5, T i6, T i7, T i8, T i9, T i10, T i11, T i12, T i13,
-         T i14, T i15, T i16, T i17, T i18, T i19, T i20, T i21, T i22, T i23, T i24, T i25, T i26,
-         T i27, T i28, T i29, T i30, T i31)
-      : si512(_mm512_set_epi16(i16(i31), i16(i30), i16(i29), i16(i28), i16(i27), i16(i26), i16(i25),
-                               i16(i24), i16(i23), i16(i22), i16(i21), i16(i20), i16(i19), i16(i18),
-                               i16(i17), i16(i16), i16(i15), i16(i14), i16(i13), i16(i12), i16(i11),
-                               i16(i10), i16(i9), i16(i8), i16(i7), i16(i6), i16(i5), i16(i4),
-                               i16(i3), i16(i2), i16(i1), i16(i0))) {}
+  x16x32(T v0, T v1, T v2, T v3, T v4, T v5, T v6, T v7, T v8, T v9, T v10, T v11, T v12, T v13,
+         T v14, T v15, T v16, T v17, T v18, T v19, T v20, T v21, T v22, T v23, T v24, T v25, T v26,
+         T v27, T v28, T v29, T v30, T v31)
+      : si512(_mm512_set_epi16(i16(v31), i16(v30), i16(v29), i16(v28), i16(v27), i16(v26), i16(v25),
+                               i16(v24), i16(v23), i16(v22), i16(v21), i16(v20), i16(v19), i16(v18),
+                               i16(v17), i16(v16), i16(v15), i16(v14), i16(v13), i16(v12), i16(v11),
+                               i16(v10), i16(v9), i16(v8), i16(v7), i16(v6), i16(v5), i16(v4),
+                               i16(v3), i16(v2), i16(v1), i16(v0))) {}
   // Constructor to build from two x16x16:
   x16x32(const NativeVector<T, 16> a0, const NativeVector<T, 16> a1)
       : si512(_mm512_inserti64x4(_mm512_castsi256_si512(a0), a1, 1)) {}

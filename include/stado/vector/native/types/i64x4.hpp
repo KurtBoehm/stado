@@ -7,6 +7,7 @@
 #include "stado/instruction-set.hpp"
 #include "stado/vector/native/base.hpp"
 #include "stado/vector/native/types/base-256.hpp"
+#include "stado/vector/native/types/i64x2.hpp"
 #include "stado/vector/native/types/i8x32.hpp"
 
 #if STADO_INSTRUCTION_SET >= STADO_AVX2
@@ -24,8 +25,7 @@ struct x64x4 : public si256 {
   // Constructor to build from all elements:
   x64x4(T i0, T i1, T i2, T i3) : si256(_mm256_setr_epi64x(i64(i0), i64(i1), i64(i2), i64(i3))) {}
   // Constructor to build from two x64x2:
-  x64x4(const Half a0, const Half a1)
-      : si256(_mm256_inserti128_si256(_mm256_castsi128_si256(a0), a1, 1)) {}
+  x64x4(const Half a0, const Half a1) : si256(_mm256_setr_m128i(a0, a1)) {}
   // Constructor to convert from type __m256i used in intrinsics:
   x64x4(const __m256i x) : si256(x) {}
   // Assignment operator to convert from type __m256i used in intrinsics:

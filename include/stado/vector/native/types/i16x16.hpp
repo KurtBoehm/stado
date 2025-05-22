@@ -30,8 +30,7 @@ struct x16x16 : public si256 {
                                 i16(i7), i16(i8), i16(i9), i16(i10), i16(i11), i16(i12), i16(i13),
                                 i16(i14), i16(i15))) {}
   // Constructor to build from two x16x8:
-  x16x16(const NativeVector<T, 8> a0, const NativeVector<T, 8> a1)
-      : si256(_mm256_inserti128_si256(_mm256_castsi128_si256(a0), a1, 1)) {}
+  x16x16(const Half a0, const Half a1) : si256(_mm256_setr_m128i(a0, a1)) {}
   // Constructor to convert from type __m256i used in intrinsics:
   x16x16(const __m256i x) : si256(x) {}
   // Assignment operator to convert from type __m256i used in intrinsics:
@@ -144,10 +143,10 @@ struct x16x16 : public si256 {
     return extract(index);
   }
   // Member functions to split into two x16x8:
-  [[nodiscard]] NativeVector<T, 8> get_low() const {
+  [[nodiscard]] Half get_low() const {
     return _mm256_castsi256_si128(ymm);
   }
-  [[nodiscard]] NativeVector<T, 8> get_high() const {
+  [[nodiscard]] Half get_high() const {
     return _mm256_extractf128_si256(ymm, 1);
   }
 

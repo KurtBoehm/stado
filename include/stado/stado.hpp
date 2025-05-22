@@ -4,6 +4,7 @@
 // IWYU pragma: begin_exports
 #include "defs.hpp"
 #include "instruction-set.hpp"
+#include "mask.hpp"
 #include "vector.hpp"
 // IWYU pragma: end_exports
 

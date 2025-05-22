@@ -7,11 +7,16 @@
 #include "stado/instruction-set.hpp"
 #include "stado/vector/native/base.hpp"
 #include "stado/vector/native/types/base-512.hpp"
+#include "stado/vector/native/types/i64x4.hpp"
 
 #if STADO_INSTRUCTION_SET >= STADO_AVX512F
 namespace stado {
 template<typename TDerived, typename T>
 struct x64x8 : public si512 {
+  using Element = T;
+  using Half = NativeVector<T, 4>;
+  static constexpr std::size_t size = 8;
+
   // Default constructor:
   x64x8() = default;
   // Constructor to broadcast the same value into all elements:
@@ -21,7 +26,7 @@ struct x64x8 : public si512 {
       : si512(_mm512_setr_epi64(i64(i0), i64(i1), i64(i2), i64(i3), i64(i4), i64(i5), i64(i6),
                                 i64(i7))) {}
   // Constructor to build from two x64x4:
-  x64x8(const NativeVector<T, 4> a0, const NativeVector<T, 4> a1)
+  x64x8(const Half a0, const Half a1)
       : si512(_mm512_inserti64x4(_mm512_castsi256_si512(a0), a1, 1)) {}
   // Constructor to convert from type __m512i used in intrinsics:
   x64x8(const __m512i x) : si512(x) {}
@@ -79,14 +84,11 @@ struct x64x8 : public si512 {
     return extract(index);
   }
   // Member functions to split into two x64x4:
-  [[nodiscard]] NativeVector<T, 4> get_low() const {
+  [[nodiscard]] Half get_low() const {
     return _mm512_castsi512_si256(zmm);
   }
-  [[nodiscard]] NativeVector<T, 4> get_high() const {
+  [[nodiscard]] Half get_high() const {
     return _mm512_extracti64x4_epi64(zmm, 1);
-  }
-  static constexpr std::size_t size() {
-    return 8;
   }
 
 private:

@@ -28,8 +28,7 @@ struct x32x8 : public si256 {
       : si256(_mm256_setr_epi32(i32(i0), i32(i1), i32(i2), i32(i3), i32(i4), i32(i5), i32(i6),
                                 i32(i7))) {}
   // Constructor to build from two x32x4:
-  x32x8(const Half a0, const Half a1)
-      : si256(_mm256_inserti128_si256(_mm256_castsi128_si256(a0), a1, 1)) {}
+  x32x8(const Half a0, const Half a1) : si256(_mm256_setr_m128i(a0, a1)) {}
   // Constructor to convert from type __m256i used in intrinsics:
   x32x8(const __m256i x) : si256(x) {}
   // Assignment operator to convert from type __m256i used in intrinsics:

@@ -7,7 +7,7 @@
 #if STADO_INSTRUCTION_SET >= STADO_AVX2
 namespace stado {
 struct si256 {
-  using register_type = __m256i;
+  using Register = __m256i;
 
   // Default constructor:
   si256() = default;

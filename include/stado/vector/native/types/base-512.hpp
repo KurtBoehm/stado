@@ -5,7 +5,7 @@
 
 namespace stado {
 struct si512 {
-  using register_type = __m512i;
+  using Register = __m512i;
 
   // Default constructor:
   si512() = default;
