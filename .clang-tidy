@@ -8,16 +8,20 @@ Checks: "
   -google-*,
   -llvm*,
   -zircon-*,
+  -bugprone-crtp-constructor-accessibility,
   -bugprone-easily-swappable-parameters,
   -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-c-copy-assignment-signature,
   -cppcoreguidelines-macro-usage,
   -cppcoreguidelines-pro-bounds-constant-array-index,
   -cppcoreguidelines-pro-bounds-pointer-arithmetic,
   -cppcoreguidelines-pro-type-reinterpret-cast,
+  -hicpp-explicit-conversions,
   -hicpp-no-array-decay,
   -hicpp-no-assembler,
   -hicpp-signed-bitwise,
   -misc-non-private-member-variables-in-classes,
+  -misc-unconventional-assign-operator,
   -modernize-use-trailing-return-type,
   -portability-simd-intrinsics,
   -readability-function-cognitive-complexity,
@@ -31,7 +35,7 @@ CheckOptions:
   - { key: readability-identifier-naming.ClassCase, value: CamelCase }
   - {
       key: readability-identifier-naming.ClassIgnoredRegexp,
-      value: "^[a-z_]*iterator$",
+      value: "^(([a-z_]*iterator)|([fx][0-9]+x[0-9]+)|(si[0-9]+))$",
     }
   - { key: readability-identifier-naming.FunctionCase, value: lower_case }
   - { key: readability-identifier-naming.NamespaceCase, value: lower_case }
@@ -50,7 +54,7 @@ CheckOptions:
   - { key: readability-identifier-naming.TypeAliasCase, value: CamelCase }
   - {
       key: readability-identifier-naming.TypeAliasIgnoredRegexp,
-      value: "^(([a-z_]+_type)|[a-z_]*iterator)$",
+      value: "^(([a-z_]+_type)|([a-z_]*iterator)|([fiu][0-9]+)|([iu][0-9]+x[0-9]+))$",
     }
   - {
       key: readability-identifier-naming.ValueTemplateParameterCase,

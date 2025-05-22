@@ -5,6 +5,7 @@
 #include "native/base.hpp"
 #include "native/divisor.hpp"
 #include "native/sizes.hpp"
+#include "native/types.hpp"
 // IWYU pragma: end_exports
 
 #endif // INCLUDE_STADO_VECTOR_NATIVE_HPP

@@ -23,7 +23,7 @@ struct NativeSizesTrait<f32> {
 };
 
 template<>
-struct NativeSizesTrait<double> {
+struct NativeSizesTrait<f64> {
 #if STADO_INSTRUCTION_SET >= STADO_AVX512F
   static constexpr std::array<std::size_t, 3> value{2, 4, 8};
 #elif STADO_INSTRUCTION_SET >= STADO_AVX

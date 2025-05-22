@@ -168,15 +168,9 @@ inline constexpr int any = -256;
 static inline u32 vml_popcnt(u32 a) {
   return u32(_mm_popcnt_u32(a)); // Intel intrinsic. Supported by gcc and clang
 }
-#ifdef __x86_64__
 static inline i64 vml_popcnt(u64 a) {
   return _mm_popcnt_u64(a); // Intel intrinsic.
 }
-#else // 32 bit mode
-static inline i64 vml_popcnt(u64 a) {
-  return _mm_popcnt_u32(u32(a >> 32)) + _mm_popcnt_u32(u32(a));
-}
-#endif
 #else // no SSE4.2
 static inline u32 vml_popcnt(u32 a) {
   // popcnt instruction not available
@@ -219,23 +213,12 @@ static inline u32 bit_scan_forward(u32 a) {
   _BitScanForward(&r, a);
   return r;
 }
-#ifdef __x86_64__
 static inline u32 bit_scan_forward(u64 a) {
   // defined in intrin.h for MS and Intel compilers
   unsigned long r;
   _BitScanForward64(&r, a);
   return (u32)r;
 }
-#else
-static inline u32 bit_scan_forward(u64 a) {
-  u32 lo = u32(a);
-  if (lo) {
-    return bit_scan_forward(lo);
-  }
-  u32 hi = u32(a >> 32);
-  return bit_scan_forward(hi) + 32;
-}
-#endif
 #endif
 
 // Define bit-scan-reverse function. Gives index to highest set bit = floor(log2(a))
@@ -246,22 +229,11 @@ static inline u32 bit_scan_reverse(u32 a) {
   __asm("bsrl %1, %0" : "=r"(r) : "r"(a) :);
   return r;
 }
-#ifdef __x86_64__
 static inline u32 bit_scan_reverse(u64 a) {
   u64 r;
   __asm("bsrq %1, %0" : "=r"(r) : "r"(a) :);
   return u32(r);
 }
-#else // 32 bit mode
-static inline u32 bit_scan_reverse(u64 a) {
-  u64 ahi = a >> 32;
-  if (ahi == 0) {
-    return bit_scan_reverse(u32(a));
-  } else {
-    return bit_scan_reverse(u32(ahi)) + 32;
-  }
-}
-#endif
 #else
 static inline u32 bit_scan_reverse(u32 a) {
   // defined in intrin.h for MS and Intel compilers
@@ -269,23 +241,12 @@ static inline u32 bit_scan_reverse(u32 a) {
   _BitScanReverse(&r, a);
   return r;
 }
-#ifdef __x86_64__
 static inline u32 bit_scan_reverse(u64 a) {
   // defined in intrin.h for MS and Intel compilers
   unsigned long r;
   _BitScanReverse64(&r, a);
   return r;
 }
-#else // 32 bit mode
-static inline u32 bit_scan_reverse(u64 a) {
-  u64 ahi = a >> 32;
-  if (ahi == 0) {
-    return bit_scan_reverse(u32(a));
-  } else {
-    return bit_scan_reverse(u32(ahi)) + 32;
-  }
-}
-#endif
 #endif
 
 // Same function, for compile-time constants
@@ -324,19 +285,20 @@ class ConstUint {};
 // template for producing quiet NAN
 template<typename TVec>
 static inline TVec nan_vec(u32 payload = 0x100) {
-  if constexpr (std::is_same_v<typename TVec::element_type, double>) { // double
+  if constexpr (std::is_same_v<typename TVec::element_type, f64>) {
+    // f64
     union {
       u64 q;
-      double f;
+      f64 f;
     } ud;
-    // n is left justified to avoid loss of NAN payload when converting to float
+    // n is left justified to avoid loss of NAN payload when converting to f32
     ud.q = 0x7FF8000000000000U | u64(payload) << 29U;
     return TVec(ud.f);
   } else {
-    // float will be converted to double if necessary
+    // f32 will be converted to f64 if necessary
     union {
       u32 i;
-      float f;
+      f32 f;
     } uf;
     uf.i = 0x7FC00000U | (payload & 0x003FFFFFU);
     return TVec(uf.f);
@@ -357,13 +319,13 @@ struct AllBitsSet {
 };
 
 template<>
-struct AllBitsSet<float> {
+struct AllBitsSet<f32> {
   using Type = u32;
   static constexpr u32 value = std::numeric_limits<u32>::max();
 };
 
 template<>
-struct AllBitsSet<double> {
+struct AllBitsSet<f64> {
   using Type = u64;
   static constexpr u64 value = std::numeric_limits<u64>::max();
 };
@@ -515,9 +477,9 @@ struct PermFlags {
 };
 
 template<typename TVec>
-constexpr PermFlags perm_flags(const std::array<int, TVec::size()>& a) {
+constexpr PermFlags perm_flags(const std::array<int, TVec::size>& a) {
   // number of elements
-  constexpr std::size_t size = TVec::size();
+  constexpr std::size_t size = TVec::size;
   // return value
   PermFlags r{.allzero = true, .largeblock = true, .same_pattern = true};
   // number of 128-bit lanes
@@ -914,10 +876,10 @@ constexpr u64 expand_mask(const std::array<int, tSize>& indices) {
 // 4:  data from high 64 bits to low  64 bits. pattern in bit 48-55
 // 8:  data from low  64 bits to high 64 bits. pattern in bit 56-63
 template<typename TVec>
-constexpr u64 perm16_flags(const std::array<int, TVec::size()>& indices) {
+constexpr u64 perm16_flags(const std::array<int, TVec::size>& indices) {
   // a is a reference to a constexpr array of permutation indexes
   // V is a vector class
-  constexpr int size = TVec::size(); // number of elements
+  constexpr int size = TVec::size; // number of elements
 
   u64 retval = 0; // return value
   std::array<u32, 4> pat{0, 0, 0, 0}; // permute patterns
@@ -972,11 +934,11 @@ constexpr u64 perm16_flags(const std::array<int, TVec::size()>& indices) {
 // The pshufb instruction provides fast permutation and zeroing,
 // allowing different patterns in each lane but no crossing of lane boundaries
 template<typename T, int tOppositeLanes = 0>
-constexpr auto pshufb_mask(const std::array<int, T::size()>& indices) {
+constexpr auto pshufb_mask(const std::array<int, T::size>& indices) {
   // Parameter a is a reference to a constexpr array of permutation indexes
   // V is a vector class
   // oppos = 1 for data from the opposite 128-bit lane in 256-bit vectors
-  constexpr std::size_t size = T::size(); // number of vector elements
+  constexpr std::size_t size = T::size; // number of vector elements
   constexpr std::size_t elementsize = sizeof(T) / size; // size of each vector element
   constexpr std::size_t nlanes = sizeof(T) / 16; // number of 128 bit lanes in vector
   constexpr std::size_t elements_per_lane = size / nlanes; // number of vector elements per lane
@@ -1093,9 +1055,9 @@ constexpr u64 blend_shufpattern = 32;
 constexpr u64 blend_rotpattern = 40;
 
 template<typename TVec>
-constexpr u64 blend_flags(const std::array<int, TVec::size()>& a) {
+constexpr u64 blend_flags(const std::array<int, TVec::size>& a) {
   // number of elements
-  constexpr std::size_t size = TVec::size();
+  constexpr std::size_t size = TVec::size;
   // number of 128-bit lanes
   constexpr std::size_t nlanes = sizeof(TVec) / 16;
   // elements per lane
