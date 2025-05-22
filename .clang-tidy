@@ -54,7 +54,7 @@ CheckOptions:
   - { key: readability-identifier-naming.TypeAliasCase, value: CamelCase }
   - {
       key: readability-identifier-naming.TypeAliasIgnoredRegexp,
-      value: "^(([a-z_]+_type)|([a-z_]*iterator)|([fiu][0-9]+)|([biu][0-9]+x[0-9]+))$",
+      value: "^(([fiu][0-9]+)|([biu][0-9]+x[0-9]+))$",
     }
   - {
       key: readability-identifier-naming.ValueTemplateParameterCase,

@@ -164,7 +164,7 @@ static inline b64x4 operator~(const b64x4 a) {
   const __m256i mask =
     _mm256_setr_epi32(i32(0xFFFFFFFFU), i32(0xFFFFFFFFU), i32(0xFFFFFFFFU), i32(0xFFFFFFFFU),
                       i32(0xFFFFFFFFU), i32(0xFFFFFFFFU), i32(0xFFFFFFFFU), i32(0xFFFFFFFFU));
-  return _mm256_xor_pd(a, _mm256_castps_pd(mask));
+  return _mm256_xor_pd(a, _mm256_castsi256_pd(mask));
 }
 
 // vector operator ^ : bitwise xor
