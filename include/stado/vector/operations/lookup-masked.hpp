@@ -22,9 +22,7 @@ template<typename TValue, typename TIdx, std::size_t tSize>
 struct LookupMasked;
 
 template<typename TMask, typename TIdxVec, typename TValue>
-requires(TMask::size == TIdxVec::size &&
-         (AnyCompactMask<TMask> || TMask::element_bits == CHAR_BIT * sizeof(TValue)) &&
-         requires { sizeof(LookupMasked<TValue, typename TIdxVec::Value, TIdxVec::size>); })
+requires(TMask::size == TIdxVec::size)
 inline auto lookup_masked(const TMask mask, const TIdxVec indices, const TValue* data) {
   using Out = LookupMasked<TValue, typename TIdxVec::Value, TIdxVec::size>;
   return Out::op(mask, indices, data);

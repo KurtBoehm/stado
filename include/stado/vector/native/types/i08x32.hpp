@@ -65,9 +65,9 @@ struct x8x32 : public si256 {
     if (n <= 0) {
       *this = 0;
     } else if (n <= 16) {
-      *this = NativeVector(Half{}.load_partial(n, p), 0);
+      *this = x8x32(Half{}.load_partial(n, p), 0);
     } else if (n < 32) {
-      *this = NativeVector(Half{}.load(p), Half{}.load_partial(n - 16, (const T*)p + 16));
+      *this = x8x32(Half{}.load(p), Half{}.load_partial(n - 16, (const T*)p + 16));
     } else {
       load(p);
     }
@@ -83,9 +83,9 @@ struct x8x32 : public si256 {
     if constexpr (tN == 0) {
       *this = 0;
     } else if constexpr (tN <= 16) {
-      *this = NativeVector(Half{}.template load_partial<tN>(p), 0);
+      *this = x8x32(Half{}.template load_partial<tN>(p), 0);
     } else if constexpr (tN < 32) {
-      *this = NativeVector(Half{}.load(p), Half{}.template load_partial<tN - 16>((const T*)p + 16));
+      *this = x8x32(Half{}.load(p), Half{}.template load_partial<tN - 16>((const T*)p + 16));
     } else {
       load(p);
     }
@@ -116,7 +116,7 @@ struct x8x32 : public si256 {
 #else
     x8x32 index_vec{0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15,
                     16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31};
-    const NativeVector ref_vec{T(n)};
+    const x8x32 ref_vec{T(n)};
     *this &= _mm256_cmpgt_epi8(ref_vec, index_vec);
 #endif
     return derived();

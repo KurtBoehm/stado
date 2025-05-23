@@ -59,34 +59,53 @@ private:
   Native native_;
 };
 
-template<std::size_t tValueBits, std::size_t tValueNum>
-inline auto operator&(SubNativeMask<tValueBits, tValueNum> m1,
-                      SubNativeMask<tValueBits, tValueNum> m2) {
-  const auto native = m1.native() & m2.native();
-  return SubNativeMask<tValueBits, tValueNum>::from_native(native);
-}
-
-template<std::size_t tValueBits, std::size_t tValueNum>
-static inline bool horizontal_or(SubNativeMask<tValueBits, tValueNum> m) {
-  return horizontal_or(m.masked_native());
-}
-template<std::size_t tValueBits, std::size_t tValueNum>
-static inline bool horizontal_and(SubNativeMask<tValueBits, tValueNum> m) {
-  return horizontal_and(m.one_extended_native());
-}
-
-template<std::size_t tValueBits, std::size_t tValueNum>
-requires(tValueBits* tValueNum < 128)
-struct MaskTrait<tValueBits, tValueNum> {
-  using Type = SubNativeMask<tValueBits, tValueNum>;
-};
-
 template<typename T>
 struct IsSubNativeMaskTrait : public std::false_type {};
 template<std::size_t tValueBits, std::size_t tSize>
 struct IsSubNativeMaskTrait<SubNativeMask<tValueBits, tSize>> : public std::true_type {};
 template<typename T>
 concept AnySubNativeMask = IsSubNativeMaskTrait<T>::value;
+
+template<std::size_t tValueBits, std::size_t tSize>
+inline auto operator&(SubNativeMask<tValueBits, tSize> m1, SubNativeMask<tValueBits, tSize> m2) {
+  const auto native = m1.native() & m2.native();
+  return SubNativeMask<tValueBits, tSize>::from_native(native);
+}
+template<std::size_t tValueBits, std::size_t tSize>
+inline auto operator|(SubNativeMask<tValueBits, tSize> m1, SubNativeMask<tValueBits, tSize> m2) {
+  const auto native = m1.native() | m2.native();
+  return SubNativeMask<tValueBits, tSize>::from_native(native);
+}
+template<std::size_t tValueBits, std::size_t tSize>
+inline auto operator~(SubNativeMask<tValueBits, tSize> m) {
+  const auto native = ~m.native();
+  return SubNativeMask<tValueBits, tSize>::from_native(native);
+}
+
+template<std::size_t tValueBits, std::size_t tSize>
+static inline bool horizontal_or(SubNativeMask<tValueBits, tSize> m) {
+  return horizontal_or(m.masked_native());
+}
+template<std::size_t tValueBits, std::size_t tSize>
+static inline bool horizontal_and(SubNativeMask<tValueBits, tSize> m) {
+  return horizontal_and(m.one_extended_native());
+}
+
+// Since this header requires both base.hpp and part-mask.hpp, the respective traits
+// need to be specialized here.
+template<std::size_t tValueBits, std::size_t tSize>
+requires(tValueBits* tSize < 128)
+struct MaskTrait<tValueBits, tSize> {
+  using Type = SubNativeMask<tValueBits, tSize>;
+};
+template<std::size_t tValueBits, std::size_t tSize>
+struct PartMaskCreator<SubNativeMask<tValueBits, tSize>> {
+  using Mask = SubNativeMask<tValueBits, tSize>;
+  static Mask create(const std::size_t part) {
+    assert(part <= tSize);
+    return Mask::from_native(part_mask<typename Mask::Native>(part));
+  }
+};
 } // namespace stado
 
 #endif // INCLUDE_STADO_MASK_SUBNATIVE_HPP
