@@ -1,6 +1,7 @@
 #ifndef INCLUDE_STADO_DEFS_HPP
 #define INCLUDE_STADO_DEFS_HPP
 
+#include <concepts>
 #include <cstddef>
 #include <cstdint>
 #include <type_traits>
@@ -70,6 +71,15 @@ template<std::size_t tBits>
 using BitInt = BitIntTrait<tBits>::Signed;
 template<std::size_t tBits>
 using BitUInt = BitIntTrait<tBits>::Unsigned;
+
+template<typename T>
+concept AnyInt8 = std::same_as<T, u8> || std::same_as<T, i8>;
+template<typename T>
+concept AnyInt16 = std::same_as<T, u16> || std::same_as<T, i16>;
+template<typename T>
+concept AnyInt32 = std::same_as<T, u32> || std::same_as<T, i32>;
+template<typename T>
+concept AnyInt64 = std::same_as<T, u64> || std::same_as<T, i64>;
 } // namespace stado
 
 #endif // INCLUDE_STADO_DEFS_HPP

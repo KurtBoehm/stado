@@ -3,6 +3,7 @@
 
 // IWYU pragma: begin_exports
 #include "operations/convert-elements.hpp"
+#include "operations/from-ptr.hpp"
 #include "operations/lookup-masked.hpp"
 #include "operations/lookup-part.hpp"
 #include "operations/shuffle.hpp"

@@ -16,7 +16,7 @@ namespace stado {
 template<typename TDerived, typename T>
 struct x64x4 : public si256 {
   using Element = T;
-  using Half = NativeVector<TDerived, 2>;
+  using Half = NativeVector<T, 2>;
   static constexpr std::size_t size = 4;
 
   // Default constructor:

@@ -23,6 +23,7 @@ Checks: "
   -hicpp-signed-bitwise,
   -misc-non-private-member-variables-in-classes,
   -misc-unconventional-assign-operator,
+  -misc-use-internal-linkage,
   -modernize-use-nodiscard,
   -modernize-use-trailing-return-type,
   -portability-simd-intrinsics,

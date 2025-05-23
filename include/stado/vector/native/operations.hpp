@@ -2,6 +2,10 @@
 #define INCLUDE_STADO_VECTOR_NATIVE_OPERATIONS_HPP
 
 // IWYU pragma: begin_exports
+#include "operations/128f.hpp"
+#include "operations/128i.hpp"
+#include "operations/256f.hpp"
+#include "operations/256i.hpp"
 #include "operations/f32x04.hpp"
 #include "operations/f32x08.hpp"
 #include "operations/f32x16.hpp"

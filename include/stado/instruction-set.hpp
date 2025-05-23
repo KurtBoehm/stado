@@ -410,7 +410,7 @@ constexpr u64 make_bit_mask(const std::array<int, tSize>& indices) {
 // The return value will be a broad boolean mask with elementsize matching vector class V
 template<typename T, std::size_t tSize>
 constexpr auto make_broad_mask(const u64 m) {
-  using Data = typename AllBitsSet<T>::type;
+  using Data = typename AllBitsSet<T>::Type;
   std::array<Data, tSize> u{0};
   for (std::size_t i = 0; i < tSize; ++i) {
     u[i] = ((m >> i) & 1U) != 0 ? AllBitsSet<T>::value : 0;
@@ -1088,16 +1088,16 @@ constexpr u64 blend_flags(const std::array<int, TVec::size>& a) {
       }
     } else { // ix >= 0
       r &= ~blend_allzero;
-      if (ix < size) {
+      if (unsigned(ix) < size) {
         // data from a
         r |= blend_a;
-        if (ix != ii) {
+        if (unsigned(ix) != ii) {
           // permutation of a
           r |= blend_perma;
         }
-      } else if (ix < 2 * size) {
+      } else if (unsigned(ix) < 2 * size) {
         r |= blend_b; // data from b
-        if (ix != ii + size) {
+        if (unsigned(ix) != ii + size) {
           // permutation of b
           r |= blend_permb;
         }
@@ -1334,7 +1334,7 @@ constexpr std::array<int, 2 * tSize> blend_perm_indexes(const std::array<int, tS
         arr[j] = u;
         arr[j + tSize] = u;
       }
-    } else if (ix < tSize) {
+    } else if (unsigned(ix) < tSize) {
       // value from a
       arr[j] = ix;
       arr[j + tSize] = u;
