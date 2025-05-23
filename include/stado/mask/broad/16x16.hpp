@@ -1,5 +1,5 @@
-#ifndef INCLUDE_STADO_MASK_BROAD_MASK_16_16_HPP
-#define INCLUDE_STADO_MASK_BROAD_MASK_16_16_HPP
+#ifndef INCLUDE_STADO_MASK_BROAD_16X16_HPP
+#define INCLUDE_STADO_MASK_BROAD_16X16_HPP
 
 #include <cstddef>
 
@@ -144,4 +144,4 @@ static inline b16x16 andnot(const b16x16 a, const b16x16 b) {
 } // namespace stado
 #endif
 
-#endif // INCLUDE_STADO_MASK_BROAD_MASK_16_16_HPP
+#endif // INCLUDE_STADO_MASK_BROAD_16X16_HPP

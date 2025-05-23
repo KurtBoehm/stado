@@ -1,5 +1,5 @@
-#ifndef INCLUDE_STADO_MASK_COMPACT_MASK_16_HPP
-#define INCLUDE_STADO_MASK_COMPACT_MASK_16_HPP
+#ifndef INCLUDE_STADO_MASK_COMPACT_16_HPP
+#define INCLUDE_STADO_MASK_COMPACT_16_HPP
 
 #include <cstddef>
 
@@ -156,4 +156,4 @@ static inline CompactMask<16> andnot(const CompactMask<16> a, const CompactMask<
 } // namespace stado
 #endif
 
-#endif // INCLUDE_STADO_MASK_COMPACT_MASK_16_HPP
+#endif // INCLUDE_STADO_MASK_COMPACT_16_HPP

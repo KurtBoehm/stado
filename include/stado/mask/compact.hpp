@@ -2,13 +2,13 @@
 #define INCLUDE_STADO_MASK_COMPACT_HPP
 
 // IWYU pragma: begin_exports
+#include "compact/02.hpp"
+#include "compact/04.hpp"
+#include "compact/08.hpp"
+#include "compact/16.hpp"
+#include "compact/32.hpp"
+#include "compact/64.hpp"
 #include "compact/base.hpp"
-#include "compact/mask-16.hpp"
-#include "compact/mask-2.hpp"
-#include "compact/mask-32.hpp"
-#include "compact/mask-4.hpp"
-#include "compact/mask-64.hpp"
-#include "compact/mask-8.hpp"
 #include "compact/operations.hpp"
 // IWYU pragma: end_exports
 

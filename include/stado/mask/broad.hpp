@@ -2,15 +2,15 @@
 #define INCLUDE_STADO_MASK_BROAD_HPP
 
 // IWYU pragma: begin_exports
+#include "broad/08x16.hpp"
+#include "broad/08x32.hpp"
+#include "broad/16x16.hpp"
+#include "broad/16x8.hpp"
+#include "broad/32x4.hpp"
+#include "broad/32x8.hpp"
+#include "broad/64x2.hpp"
+#include "broad/64x4.hpp"
 #include "broad/base.hpp"
-#include "broad/mask-16-16.hpp"
-#include "broad/mask-16-8.hpp"
-#include "broad/mask-32-4.hpp"
-#include "broad/mask-32-8.hpp"
-#include "broad/mask-64-2.hpp"
-#include "broad/mask-64-4.hpp"
-#include "broad/mask-8-16.hpp"
-#include "broad/mask-8-32.hpp"
 // IWYU pragma: end_exports
 
 #endif // INCLUDE_STADO_MASK_BROAD_HPP

@@ -1,5 +1,5 @@
-#ifndef INCLUDE_STADO_MASK_COMPACT_MASK_64_HPP
-#define INCLUDE_STADO_MASK_COMPACT_MASK_64_HPP
+#ifndef INCLUDE_STADO_MASK_COMPACT_64_HPP
+#define INCLUDE_STADO_MASK_COMPACT_64_HPP
 
 #include <cstddef>
 
@@ -175,4 +175,4 @@ static inline bool horizontal_or(const CompactMask<64> a) {
 } // namespace stado
 #endif
 
-#endif // INCLUDE_STADO_MASK_COMPACT_MASK_64_HPP
+#endif // INCLUDE_STADO_MASK_COMPACT_64_HPP

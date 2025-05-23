@@ -1,5 +1,5 @@
-#ifndef INCLUDE_STADO_MASK_BROAD_MASK_64_4_HPP
-#define INCLUDE_STADO_MASK_BROAD_MASK_64_4_HPP
+#ifndef INCLUDE_STADO_MASK_BROAD_64X4_HPP
+#define INCLUDE_STADO_MASK_BROAD_64X4_HPP
 
 #include <array>
 #include <cstddef>
@@ -230,4 +230,4 @@ static inline u8 to_bits(const b64x4 x) {
 } // namespace stado
 #endif
 
-#endif // INCLUDE_STADO_MASK_BROAD_MASK_64_4_HPP
+#endif // INCLUDE_STADO_MASK_BROAD_64X4_HPP
