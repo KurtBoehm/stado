@@ -6,8 +6,8 @@
 #include "stado/defs.hpp"
 #include "stado/instruction-set.hpp"
 #include "stado/vector/native/base.hpp"
-#include "stado/vector/native/types/f32x4.hpp"
-#include "stado/vector/native/types/f32x8.hpp"
+#include "stado/vector/native/types/f32x04.hpp"
+#include "stado/vector/native/types/f32x08.hpp"
 
 #if STADO_INSTRUCTION_SET >= STADO_AVX512F
 namespace stado {

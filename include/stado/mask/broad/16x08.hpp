@@ -7,7 +7,7 @@
 #include "stado/instruction-set.hpp"
 #include "stado/mask/broad/base.hpp"
 #include "stado/vector/native/types/base-128.hpp"
-#include "stado/vector/native/types/i16x8.hpp"
+#include "stado/vector/native/types/i16x08.hpp"
 
 namespace stado {
 template<>
