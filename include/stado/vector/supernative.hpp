@@ -60,17 +60,17 @@ struct SuperNativeVector {
     }
   }
 
-  Half& lower() {
+  Half& get_low() {
     return lower_;
   }
-  const Half& lower() const {
+  const Half& get_low() const {
     return lower_;
   }
 
-  Half& upper() {
+  Half& get_high() {
     return upper_;
   }
-  const Half& upper() const {
+  const Half& get_high() const {
     return upper_;
   }
 
@@ -116,7 +116,7 @@ struct VectorTraitImpl<false, false, true, T, tSize> {
 
 template<typename T, std::size_t tSize>
 static T horizontal_add(SuperNativeVector<T, tSize> vec) {
-  return horizontal_add(vec.lower()) + horizontal_add(vec.upper());
+  return horizontal_add(vec.get_low()) + horizontal_add(vec.get_high());
 }
 } // namespace stado
 

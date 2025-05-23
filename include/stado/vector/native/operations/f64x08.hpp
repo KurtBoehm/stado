@@ -237,7 +237,7 @@ inline f64x8 if_div(const CompactMask<8> f, const f64x8 a, const f64x8 b) {
 // even for -0.0, -INF and -NAN
 inline CompactMask<8> sign_bit(const f64x8 a) {
   const i64x8 t1 = _mm512_castpd_si512(a); // reinterpret as 64-bit integer
-  return CompactMask<8>(t1 < 0);
+  return {t1 < 0};
 }
 
 // Function sign_combine: changes the sign of a when b has the sign bit set
@@ -259,9 +259,9 @@ inline CompactMask<8> is_finite(const f64x8 a) {
 #else
   i64x8 t1 = _mm512_castpd_si512(a); // reinterpret as 64-bit integer
   i64x8 t2 = t1 << 1; // shift out sign bit
-  i64x8 t3 = 0xFFE0000000000000ll; // exponent mask
+  i64x8 t3 = i64(0xFFE0000000000000); // exponent mask
   auto t4 = i64x8(t2 & t3) != t3; // exponent field is not all 1s
-  return CompactMask<8>(t4);
+  return {t4};
 #endif
 }
 
@@ -273,7 +273,8 @@ inline CompactMask<8> is_inf(const f64x8 a) {
 #else
   i64x8 t1 = _mm512_castpd_si512(a); // reinterpret as 64-bit integer
   i64x8 t2 = t1 << 1; // shift out sign bit
-  return CompactMask<8>(t2 == 0xFFE0000000000000ll); // exponent is all 1s, fraction is 0
+  // exponent is all 1s, fraction is 0
+  return {t2 == i64x8(i64(0xFFE0000000000000))};
 #endif
 }
 
@@ -295,7 +296,7 @@ inline CompactMask<8> is_nan(const f64x8 a) {
   __m512d aa = a;
   __mmask16 unordered;
   __asm volatile("vcmppd $3, %1, %1, %0" : "=Yk"(unordered) : "v"(aa));
-  return CompactMask<8>(unordered);
+  return {unordered};
 }
 #else
 inline CompactMask<8> is_nan(const f64x8 a) {
@@ -314,10 +315,10 @@ inline CompactMask<8> is_subnormal(const f64x8 a) {
 #else
   i64x8 t1 = _mm512_castpd_si512(a); // reinterpret as 64-bit integer
   i64x8 t2 = t1 << 1; // shift out sign bit
-  i64x8 t3 = 0xFFE0000000000000ll; // exponent mask
+  i64x8 t3 = i64(0xFFE0000000000000); // exponent mask
   i64x8 t4 = t2 & t3; // exponent
   i64x8 t5 = _mm512_andnot_si512(t3, t2); // fraction
-  return CompactMask<8>(t4 == 0 && t5 != 0); // exponent = 0 and fraction != 0
+  return {t4 == i64x8(0) && t5 != i64x8(0)}; // exponent = 0 and fraction != 0
 #endif
 }
 
@@ -328,8 +329,8 @@ inline CompactMask<8> is_zero_or_subnormal(const f64x8 a) {
   return _mm512_fpclass_pd_mask(a, 0x26);
 #else
   i64x8 t = _mm512_castpd_si512(a); // reinterpret as 32-bit integer
-  t &= 0x7FF0000000000000ll; // isolate exponent
-  return CompactMask<8>(t == 0); // exponent = 0
+  t &= i64(0x7FF0000000000000); // isolate exponent
+  return {t == i64x8(0)}; // exponent = 0
 #endif
 }
 
@@ -475,8 +476,8 @@ inline f64x8 to_f64(const i64x8 a) {
 #else
   i64 aa[8]; // inefficient
   a.store(aa);
-  return f64x8(f64(aa[0]), f64(aa[1]), f64(aa[2]), f64(aa[3]), f64(aa[4]), f64(aa[5]), f64(aa[6]),
-               f64(aa[7]));
+  return {f64(aa[0]), f64(aa[1]), f64(aa[2]), f64(aa[3]),
+          f64(aa[4]), f64(aa[5]), f64(aa[6]), f64(aa[7])};
 #endif
 }
 
@@ -486,8 +487,8 @@ inline f64x8 to_f64(const u64x8 a) {
 #else
   u64 aa[8]; // inefficient
   a.store(aa);
-  return f64x8(f64(aa[0]), f64(aa[1]), f64(aa[2]), f64(aa[3]), f64(aa[4]), f64(aa[5]), f64(aa[6]),
-               f64(aa[7]));
+  return {f64(aa[0]), f64(aa[1]), f64(aa[2]), f64(aa[3]),
+          f64(aa[4]), f64(aa[5]), f64(aa[6]), f64(aa[7])};
 #endif
 }
 

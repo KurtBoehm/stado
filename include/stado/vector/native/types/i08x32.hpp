@@ -115,7 +115,7 @@ struct x8x32 : public si256 {
 #else
     x8x32 index_vec{0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15,
                     16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31};
-    const NativeVector ref_vec(T(n));
+    const NativeVector ref_vec{T(n)};
     *this &= _mm256_cmpgt_epi8(ref_vec, index_vec);
 #endif
     return derived();

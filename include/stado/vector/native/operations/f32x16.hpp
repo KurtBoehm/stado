@@ -241,7 +241,7 @@ inline f32x16 if_div(const CompactMask<16> f, const f32x16 a, const f32x16 b) {
 // underscore in the name avoids a conflict with a macro in Intel's mathimf.h)
 inline CompactMask<16> sign_bit(const f32x16 a) {
   const i32x16 t1 = _mm512_castps_si512(a); // reinterpret as 32-bit integer
-  return CompactMask<16>(t1 < 0);
+  return {t1 < 0};
 }
 
 // Function sign_combine: changes the sign of a when b has the sign bit set
@@ -265,8 +265,8 @@ inline CompactMask<16> is_finite(const f32x16 a) {
 #else
   i32x16 t1 = _mm512_castps_si512(a); // reinterpret as 32-bit integer
   i32x16 t2 = t1 << 1; // shift out sign bit
-  auto t3 = i32x16(t2 & 0xFF000000) != 0xFF000000; // exponent field is not all 1s
-  return CompactMask<16>(t3);
+  auto t3 = i32x16(t2 & i32(0xFF000000)) != i32x16(i32(0xFF000000)); // exponent field is not all 1s
+  return {t3};
 #endif
 }
 
@@ -279,7 +279,7 @@ inline CompactMask<16> is_inf(const f32x16 a) {
 #else
   i32x16 t1 = _mm512_castps_si512(a); // reinterpret as 32-bit integer
   i32x16 t2 = t1 << 1; // shift out sign bit
-  return CompactMask<16>(t2 == 0xFF000000); // exponent is all 1s, fraction is 0
+  return {t2 == i32x16(i32(0xFF000000))}; // exponent is all 1s, fraction is 0
 #endif
 }
 
@@ -301,7 +301,7 @@ inline CompactMask<16> is_nan(const f32x16 a) {
   __m512 aa = a;
   __mmask16 unordered;
   __asm volatile("vcmpps $3, %1, %1, %0" : "=Yk"(unordered) : "v"(aa));
-  return CompactMask<16>(unordered);
+  return {unordered};
 }
 #else
 inline CompactMask<16> is_nan(const f32x16 a) {
@@ -320,10 +320,10 @@ inline CompactMask<16> is_subnormal(const f32x16 a) {
 #else
   i32x16 t1 = _mm512_castps_si512(a); // reinterpret as 32-bit integer
   i32x16 t2 = t1 << 1; // shift out sign bit
-  i32x16 t3 = 0xFF000000; // exponent mask
+  i32x16 t3 = i32(0xFF000000); // exponent mask
   i32x16 t4 = t2 & t3; // exponent
   i32x16 t5 = _mm512_andnot_si512(t3, t2); // fraction
-  return CompactMask<16>(t4 == 0 && t5 != 0); // exponent = 0 and fraction != 0
+  return {t4 == i32x16(0) && t5 != i32x16(0)}; // exponent = 0 and fraction != 0
 #endif
 }
 
@@ -335,7 +335,7 @@ inline CompactMask<16> is_zero_or_subnormal(const f32x16 a) {
 #else
   i32x16 t = _mm512_castps_si512(a); // reinterpret as 32-bit integer
   t &= 0x7F800000; // isolate exponent
-  return CompactMask<16>(t == 0); // exponent = 0
+  return {t == i32x16(0)}; // exponent = 0
 #endif
 }
 

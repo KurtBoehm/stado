@@ -130,7 +130,7 @@ inline Mask<8, 32> operator!=(const i8x32 a, const i8x32 b) {
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // compact boolean vectors
   return _mm256_cmp_epi8_mask(a, b, 4);
 #else
-  return Mask<8, 32>(i8x32(~(a == b)));
+  return {i8x32(~(a == b))};
 #endif
 }
 
@@ -157,7 +157,7 @@ inline Mask<8, 32> operator>=(const i8x32 a, const i8x32 b) {
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // compact boolean vectors
   return _mm256_cmp_epi8_mask(a, b, 5);
 #else
-  return Mask<8, 32>(i8x32(~(b > a)));
+  return {i8x32(~(b > a))};
 #endif
 }
 
@@ -172,7 +172,7 @@ inline Mask<8, 32> operator<=(const i8x32 a, const i8x32 b) {
 
 // vector operator & : bitwise and
 inline i8x32 operator&(const i8x32 a, const i8x32 b) {
-  return i8x32(si256(a) & si256(b));
+  return {si256(a) & si256(b)};
 }
 inline i8x32 operator&&(const i8x32 a, const i8x32 b) {
   return a & b;
@@ -185,7 +185,7 @@ inline i8x32& operator&=(i8x32& a, const i8x32 b) {
 
 // vector operator | : bitwise or
 inline i8x32 operator|(const i8x32 a, const i8x32 b) {
-  return i8x32(si256(a) | si256(b));
+  return {si256(a) | si256(b)};
 }
 inline i8x32 operator||(const i8x32 a, const i8x32 b) {
   return a | b;
@@ -198,7 +198,7 @@ inline i8x32& operator|=(i8x32& a, const i8x32 b) {
 
 // vector operator ^ : bitwise xor
 inline i8x32 operator^(const i8x32 a, const i8x32 b) {
-  return i8x32(si256(a) ^ si256(b));
+  return {si256(a) ^ si256(b)};
 }
 // vector operator ^= : bitwise xor
 inline i8x32& operator^=(i8x32& a, const i8x32 b) {
@@ -208,7 +208,7 @@ inline i8x32& operator^=(i8x32& a, const i8x32 b) {
 
 // vector operator ~ : bitwise not
 inline i8x32 operator~(const i8x32 a) {
-  return i8x32(~si256(a));
+  return {~si256(a)};
 }
 
 // vector operator ! : logical not, returns true for elements == 0
@@ -237,7 +237,7 @@ inline i8x32 if_add(const Mask<8, 32> f, const i8x32 a, const i8x32 b) {
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // compact boolean vectors
   return _mm256_mask_add_epi8(a, f, a, b);
 #else
-  return a + (i8x32(f) & b);
+  return a + (__m256i(f) & b);
 #endif
 }
 
@@ -246,7 +246,7 @@ inline i8x32 if_sub(const Mask<8, 32> f, const i8x32 a, const i8x32 b) {
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // compact boolean vectors
   return _mm256_mask_sub_epi8(a, f, a, b);
 #else
-  return a - (i8x32(f) & b);
+  return a - (__m256i(f) & b);
 #endif
 }
 
