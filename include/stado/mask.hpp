@@ -5,6 +5,7 @@
 #include "mask/base.hpp"
 #include "mask/broad.hpp"
 #include "mask/compact.hpp"
+#include "mask/subnative.hpp"
 // IWYU pragma: end_exports
 
 #endif // INCLUDE_STADO_MASK_HPP
