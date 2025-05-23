@@ -179,6 +179,6 @@ private:
 
 using f32x8 = NativeVector<f32, 8>;
 } // namespace stado
-#endif // AVX
+#endif
 
 #endif // INCLUDE_STADO_VECTOR_NATIVE_TYPES_F32X8_HPP

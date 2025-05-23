@@ -22,13 +22,13 @@ struct BroadMask<64, 4> {
   // Default constructor:
   BroadMask() = default;
 // Constructor to build from all elements:
-#if STADO_INSTRUCTION_SET >= STADO_AVX2 // AVX2
+#if STADO_INSTRUCTION_SET >= STADO_AVX2
   BroadMask(bool b0, bool b1, bool b2, bool b3)
       : ymm(_mm256_castsi256_pd(_mm256_setr_epi64x(-i64(b0), -i64(b1), -i64(b2), -i64(b3)))) {}
 #else
   BroadMask(bool b0, bool b1, bool b2, bool b3) {
-    __m128 blo = _mm_castsi128_ps(_mm_setr_epi32(-(int)b0, -(int)b0, -(int)b1, -(int)b1));
-    __m128 bhi = _mm_castsi128_ps(_mm_setr_epi32(-(int)b2, -(int)b2, -(int)b3, -(int)b3));
+    __m128 blo = _mm_castsi128_ps(_mm_setr_epi32(-i32(b0), -i32(b0), -i32(b1), -i32(b1)));
+    __m128 bhi = _mm_castsi128_ps(_mm_setr_epi32(-i32(b2), -i32(b2), -i32(b3), -i32(b3)));
     ymm = _mm256_castps_pd(_mm256_setr_m128(blo, bhi));
   }
 #endif
@@ -36,20 +36,20 @@ struct BroadMask<64, 4> {
   BroadMask(const Half a0, const Half a1) : ymm(_mm256_setr_m128d(a0, a1)) {}
   // Constructor to convert from type __m256d used in intrinsics:
   BroadMask(const __m256d x) : ymm(x) {}
-#if STADO_INSTRUCTION_SET >= STADO_AVX2 // AVX2
+#if STADO_INSTRUCTION_SET >= STADO_AVX2
   BroadMask(__m256i const x) : ymm(_mm256_castsi256_pd(x)) {}
-#endif // AVX2
+#endif
   // Assignment operator to convert from type __m256d used in intrinsics:
   BroadMask& operator=(const __m256d x) {
     ymm = x;
     return *this;
   }
 // Constructor to broadcast the same value into all elements:
-#if STADO_INSTRUCTION_SET >= STADO_AVX2 // AVX2
+#if STADO_INSTRUCTION_SET >= STADO_AVX2
   BroadMask(bool b) : ymm(_mm256_castsi256_pd(_mm256_set1_epi64x(-i64(b)))) {}
 #else
   BroadMask(bool b) {
-    __m128 b1 = _mm_castsi128_ps(_mm_set1_epi32(-(int)b));
+    __m128 b1 = _mm_castsi128_ps(_mm_set1_epi32(-i32(b)));
     ymm = _mm256_castps_pd(_mm256_setr_m128(b1, b1));
   }
 #endif
@@ -78,14 +78,14 @@ struct BroadMask<64, 4> {
   }
 #else
   // Member function to change a bitfield to a boolean vector
-  // AVX version. Cannot use float instructions if subnormals are disabled
+  // Cannot use float instructions if subnormals are disabled
   BroadMask& load_bits(u8 a) {
     Half a0 = Half().load_bits(a);
     Half a1 = Half().load_bits(u8(a >> 2U));
     *this = BroadMask(a0, a1);
     return *this;
   }
-#endif // AVX2
+#endif
   // Member function to change a single element in vector
   BroadMask& insert(std::size_t index, bool value) {
     static constexpr std::array<i32, 16> maskl{0, 0, 0, 0, 0, 0, 0, 0, -1, -1, 0, 0, 0, 0, 0, 0};
@@ -111,7 +111,7 @@ struct BroadMask<64, 4> {
 #endif
   }
   // Extract a single element. Operator [] can only read an element, not write.
-  bool operator[](int index) const {
+  bool operator[](std::size_t index) const {
     return extract(index);
   }
   // Member functions to split into two Vec4fb:
@@ -202,7 +202,7 @@ static inline b64x4 andnot(const b64x4 a, const b64x4 b) {
 
 // horizontal_and. Returns true if all bits are 1
 static inline bool horizontal_and(const b64x4 a) {
-#if STADO_INSTRUCTION_SET >= STADO_AVX2 // 256 bit integer vectors are available, AVX2
+#if STADO_INSTRUCTION_SET >= STADO_AVX2 // 256 bit integer vectors are available
   return horizontal_and(si256(_mm256_castpd_si256(a)));
 #else // split into 128 bit vectors
   return horizontal_and(a.get_low() & a.get_high());
@@ -211,7 +211,7 @@ static inline bool horizontal_and(const b64x4 a) {
 
 // horizontal_or. Returns true if at least one bit is 1
 static inline bool horizontal_or(const b64x4 a) {
-#if STADO_INSTRUCTION_SET >= STADO_AVX2 // 256 bit integer vectors are available, AVX2
+#if STADO_INSTRUCTION_SET >= STADO_AVX2 // 256 bit integer vectors are available
   return horizontal_or(si256(_mm256_castpd_si256(a)));
 #else // split into 128 bit vectors
   return horizontal_or(a.get_low() | a.get_high());
@@ -220,7 +220,7 @@ static inline bool horizontal_or(const b64x4 a) {
 
 // to_bits: convert boolean vector to integer bitfield
 static inline u8 to_bits(const b64x4 x) {
-#if STADO_INSTRUCTION_SET >= STADO_AVX2 // AVX2
+#if STADO_INSTRUCTION_SET >= STADO_AVX2
   auto a = u32(_mm256_movemask_epi8(x));
   return ((a & 1) | ((a >> 7) & 2)) | (((a >> 14) & 4) | ((a >> 21) & 8));
 #else
@@ -228,7 +228,6 @@ static inline u8 to_bits(const b64x4 x) {
 #endif
 }
 } // namespace stado
-
-#endif // AVX
+#endif
 
 #endif // INCLUDE_STADO_MASK_BROAD_MASK_64_4_HPP

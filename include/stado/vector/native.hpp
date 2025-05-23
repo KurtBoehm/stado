@@ -4,6 +4,7 @@
 // IWYU pragma: begin_exports
 #include "native/base.hpp"
 #include "native/divisor.hpp"
+#include "native/operations.hpp"
 #include "native/sizes.hpp"
 #include "native/types.hpp"
 // IWYU pragma: end_exports

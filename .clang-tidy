@@ -13,6 +13,7 @@ Checks: "
   -cppcoreguidelines-avoid-magic-numbers,
   -cppcoreguidelines-c-copy-assignment-signature,
   -cppcoreguidelines-macro-usage,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
   -cppcoreguidelines-pro-bounds-constant-array-index,
   -cppcoreguidelines-pro-bounds-pointer-arithmetic,
   -cppcoreguidelines-pro-type-reinterpret-cast,
@@ -63,5 +64,9 @@ CheckOptions:
   - {
       key: readability-identifier-naming.ValueTemplateParameterPrefix,
       value: t,
+    }
+  - {
+      key: readability-identifier-naming.ValueTemplateParameterIgnoredRegexp,
+      value: "^(([a-z][0-9]*))$",
     }
   - { key: readability-identifier-naming.VariableCase, value: lower_case }

@@ -123,7 +123,6 @@ private:
 
 using f32x16 = NativeVector<f32, 16>;
 } // namespace stado
-
-#endif // AVX512F
+#endif
 
 #endif // INCLUDE_STADO_VECTOR_NATIVE_TYPES_F32X16_HPP

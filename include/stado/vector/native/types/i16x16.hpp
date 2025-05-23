@@ -2,6 +2,7 @@
 #define INCLUDE_STADO_VECTOR_NATIVE_TYPES_I16X16_HPP
 
 #include <array>
+#include <concepts>
 #include <cstddef>
 
 #include "stado/defs.hpp"
@@ -170,6 +171,9 @@ struct NativeVector<u16, 16> : public x16x16<NativeVector<u16, 16>, u16> {
   using x16x16<NativeVector<u16, 16>, u16>::x16x16;
 };
 using u16x16 = NativeVector<u16, 16>;
+
+template<typename TVec>
+concept AnyInt16x16 = std::same_as<TVec, i16x16> || std::same_as<TVec, u16x16>;
 } // namespace stado
 #endif
 

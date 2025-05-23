@@ -3,14 +3,13 @@
 
 #include <array>
 #include <cstddef>
-#include <cstdint>
 
 #include "stado/defs.hpp"
 #include "stado/instruction-set.hpp"
 #include "stado/mask/broad/base.hpp"
 #include "stado/mask/broad/mask-32-4.hpp"
 
-#if STADO_INSTRUCTION_SET >= STADO_AVX // AVX
+#if STADO_INSTRUCTION_SET >= STADO_AVX
 namespace stado {
 template<>
 struct BroadMask<32, 8> {
@@ -28,8 +27,8 @@ struct BroadMask<32, 8> {
                                                   -i32(b5), -i32(b6), -i32(b7)))) {}
 #else
   BroadMask(bool b0, bool b1, bool b2, bool b3, bool b4, bool b5, bool b6, bool b7) {
-    __m128 blo = _mm_castsi128_ps(_mm_setr_epi32(-(int)b0, -(int)b1, -(int)b2, -(int)b3));
-    __m128 bhi = _mm_castsi128_ps(_mm_setr_epi32(-(int)b4, -(int)b5, -(int)b6, -(int)b7));
+    __m128 blo = _mm_castsi128_ps(_mm_setr_epi32(-i32(b0), -i32(b1), -i32(b2), -i32(b3)));
+    __m128 bhi = _mm_castsi128_ps(_mm_setr_epi32(-i32(b4), -i32(b5), -i32(b6), -i32(b7)));
     ymm = _mm256_set_m128(bhi, blo);
   }
 #endif
@@ -47,10 +46,10 @@ struct BroadMask<32, 8> {
   }
 // Constructor to broadcast the same value into all elements:
 #if STADO_INSTRUCTION_SET >= STADO_AVX2
-  BroadMask(bool b) : ymm(_mm256_castsi256_ps(_mm256_set1_epi32(-(int)b))) {}
+  BroadMask(bool b) : ymm(_mm256_castsi256_ps(_mm256_set1_epi32(-i32(b)))) {}
 #else
   BroadMask(bool b) {
-    __m128 b1 = _mm_castsi128_ps(_mm_set1_epi32(-(int)b));
+    __m128 b1 = _mm_castsi128_ps(_mm_set1_epi32(-i32(b)));
     ymm = _mm256_set_m128(b1, b1);
   }
 #endif
@@ -68,19 +67,19 @@ struct BroadMask<32, 8> {
     return _mm256_castps_si256(ymm);
   }
   // Member function to change a bitfield to a boolean vector
-  BroadMask& load_bits(uint8_t a) {
-    __m256i b1 = _mm256_set1_epi32((i32)a); // broadcast a
+  BroadMask& load_bits(u8 a) {
+    __m256i b1 = _mm256_set1_epi32(i32(a)); // broadcast a
     __m256i m2 = _mm256_setr_epi32(1, 2, 4, 8, 0x10, 0x20, 0x40, 0x80);
     __m256i d1 = _mm256_and_si256(b1, m2); // isolate one bit in each dword
     ymm = _mm256_castsi256_ps(_mm256_cmpgt_epi32(d1, _mm256_setzero_si256())); // compare with 0
     return *this;
   }
-#else // AVX version
-  // Member function to change a bitfield to a boolean vector AVX version.
+#else
+  // Member function to change a bitfield to an AVX Boolean vector.
   // Cannot use f32 instructions if subnormals are disabled
-  BroadMask& load_bits(uint8_t a) {
+  BroadMask& load_bits(u8 a) {
     Half y0 = Half().load_bits(a);
-    Half y1 = Half().load_bits(uint8_t(a >> 4U));
+    Half y1 = Half().load_bits(u8(a >> 4U));
     *this = BroadMask(y0, y1);
     return *this;
   }
@@ -109,7 +108,7 @@ struct BroadMask<32, 8> {
 #endif
   }
   // Extract a single element. Operator [] can only read an element, not write.
-  bool operator[](int index) const {
+  bool operator[](std::size_t index) const {
     return extract(index);
   }
   // Member functions to split into two Vec4fb:

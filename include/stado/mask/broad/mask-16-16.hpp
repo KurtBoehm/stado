@@ -2,7 +2,6 @@
 #define INCLUDE_STADO_MASK_BROAD_MASK_16_16_HPP
 
 #include <cstddef>
-#include <cstdint>
 
 #include "stado/defs.hpp"
 #include "stado/instruction-set.hpp"
@@ -61,11 +60,11 @@ struct BroadMask<16, 16> : public i16x16 {
   }
   // Extract a single element. Use store function if extracting more than one element.
   // Operator [] can only read an element, not write.
-  bool operator[](int index) const {
+  bool operator[](std::size_t index) const {
     return extract(index);
   }
   // Member function to change a bitfield to a boolean vector
-  BroadMask& load_bits(uint16_t a) {
+  BroadMask& load_bits(u16 a) {
     __m256i b1 = _mm256_set1_epi16(i16(a)); // broadcast a
     __m256i m1 = _mm256_setr_epi32(0, 0, 0, 0, 0x00010001, 0x00010001, 0x00010001, 0x00010001);
     __m256i c1 = _mm256_shuffle_epi8(b1, m1); // get right byte in each position
@@ -143,6 +142,6 @@ static inline b16x16 andnot(const b16x16 a, const b16x16 b) {
   return {andnot(si256(a), si256(b))};
 }
 } // namespace stado
-#endif // AVX2
+#endif
 
 #endif // INCLUDE_STADO_MASK_BROAD_MASK_16_16_HPP

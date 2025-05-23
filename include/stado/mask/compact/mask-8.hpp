@@ -8,7 +8,7 @@
 #include "stado/mask/broad/mask-64-4.hpp"
 #include "stado/mask/compact/base.hpp"
 
-#if STADO_INSTRUCTION_SET >= STADO_AVX512F // AVX512F
+#if STADO_INSTRUCTION_SET >= STADO_AVX512F
 namespace stado {
 template<>
 struct CompactMask<8> {

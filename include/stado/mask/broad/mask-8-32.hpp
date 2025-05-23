@@ -2,7 +2,6 @@
 #define INCLUDE_STADO_MASK_BROAD_MASK_8_32_HPP
 
 #include <cstddef>
-#include <cstdint>
 
 #include "stado/defs.hpp"
 #include "stado/instruction-set.hpp"
@@ -65,13 +64,13 @@ struct BroadMask<8, 32> : public i8x32 {
   }
   // Extract a single element. Use store function if extracting more than one element.
   // Operator [] can only read an element, not write.
-  bool operator[](int index) const {
+  bool operator[](std::size_t index) const {
     return extract(index);
   }
   // Member function to change a bitfield to a boolean vector
-  BroadMask& load_bits(uint32_t a) {
+  BroadMask& load_bits(u32 a) {
     __m256i b1 =
-      _mm256_set1_epi32((int32_t)~a); // broadcast a. Invert because we have no compare-not-equal
+      _mm256_set1_epi32(i32(~a)); // broadcast a. Invert because we have no compare-not-equal
     __m256i m1 = _mm256_setr_epi32(0, 0, 0x01010101, 0x01010101, 0x02020202, 0x02020202, 0x03030303,
                                    0x03030303);
     __m256i c1 = _mm256_shuffle_epi8(b1, m1); // get right byte in each position

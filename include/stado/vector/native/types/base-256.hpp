@@ -26,32 +26,32 @@ struct si256 {
   }
   // Member function to load from array (unaligned)
   si256& load(const void* p) {
-    ymm = _mm256_loadu_si256((const __m256i*)p);
+    ymm = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(p));
     return *this;
   }
   // Member function to load from array, aligned by 32
   // You may use load_a instead of load if you are certain that p points to an address
   // divisible by 32, but there is hardly any speed advantage of load_a on modern processors
   si256& load_a(const void* p) {
-    ymm = _mm256_load_si256((const __m256i*)p);
+    ymm = _mm256_load_si256(reinterpret_cast<const __m256i*>(p));
     return *this;
   }
   // Member function to store into array (unaligned)
   void store(void* p) const {
-    _mm256_storeu_si256((__m256i*)p, ymm);
+    _mm256_storeu_si256(reinterpret_cast<__m256i*>(p), ymm);
   }
   // Member function storing into array, aligned by 32
   // You may use store_a instead of store if you are certain that p points to an address
   // divisible by 32, but there is hardly any speed advantage of load_a on modern processors
   void store_a(void* p) const {
-    _mm256_store_si256((__m256i*)p, ymm);
+    _mm256_store_si256(reinterpret_cast<__m256i*>(p), ymm);
   }
   // Member function storing to aligned uncached memory (non-temporal store).
   // This may be more efficient than store_a when storing large blocks of memory if it
   // is unlikely that the data will stay in the cache until it is read again.
   // Note: Will generate runtime error if p is not aligned by 32
   void store_nt(void* p) const {
-    _mm256_stream_si256((__m256i*)p, ymm);
+    _mm256_stream_si256(reinterpret_cast<__m256i*>(p), ymm);
   }
   // Member functions to split into two si128:
   [[nodiscard]] si128 get_low() const {
@@ -135,6 +135,6 @@ static inline bool horizontal_or(const si256 a) {
   return _mm256_testz_si256(a, a) == 0;
 }
 } // namespace stado
-#endif // AVX2
+#endif
 
 #endif // INCLUDE_STADO_VECTOR_NATIVE_TYPES_BASE_256_HPP

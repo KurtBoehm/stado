@@ -143,6 +143,6 @@ struct NativeVector<u8, 64> : public x8x64<NativeVector<u8, 64>, u8> {
 };
 using u8x64 = NativeVector<u8, 64>;
 } // namespace stado
-#endif // AVX512BW
+#endif
 
 #endif // INCLUDE_STADO_VECTOR_NATIVE_TYPES_I8X64_HPP

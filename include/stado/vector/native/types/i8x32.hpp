@@ -102,7 +102,7 @@ struct x8x32 : public si256 {
       get_low().store_partial(n, p);
     } else if (n < 32) {
       get_low().store(p);
-      get_high().store_partial(n - 16, (char*)p + 16);
+      get_high().store_partial(n - 16, (T*)p + 16);
     } else {
       store(p);
     }

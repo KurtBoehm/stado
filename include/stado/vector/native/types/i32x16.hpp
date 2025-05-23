@@ -1,6 +1,7 @@
 #ifndef INCLUDE_STADO_VECTOR_NATIVE_TYPES_I32X16_HPP
 #define INCLUDE_STADO_VECTOR_NATIVE_TYPES_I32X16_HPP
 
+#include <concepts>
 #include <cstddef>
 
 #include "stado/defs.hpp"
@@ -14,7 +15,7 @@ namespace stado {
 template<typename TDerived, typename T>
 struct x32x16 : public si512 {
   using Element = T;
-  using Half = NativeVector<TDerived, 8>;
+  using Half = NativeVector<T, 8>;
   static constexpr std::size_t size = 16;
 
   // Default constructor:
@@ -104,22 +105,19 @@ private:
 
 template<>
 struct NativeVector<i32, 16> : public x32x16<NativeVector<i32, 16>, i32> {
-  using parent_type = x32x16<NativeVector<i32, 16>, i32>;
-  using element_type = i32;
-  using parent_type::parent_type;
+  using x32x16<NativeVector<i32, 16>, i32>::x32x16;
 };
+using i32x16 = NativeVector<i32, 16>;
 
 template<>
 struct NativeVector<u32, 16> : public x32x16<NativeVector<u32, 16>, u32> {
-  using parent_type = x32x16<NativeVector<u32, 16>, u32>;
-  using element_type = u32;
-  using parent_type::parent_type;
+  using x32x16<NativeVector<u32, 16>, u32>::x32x16;
 };
-
-using i32x16 = NativeVector<i32, 16>;
 using u32x16 = NativeVector<u32, 16>;
-} // namespace stado
 
-#endif // AVX512F
+template<typename TVec>
+concept AnyInt32x16 = std::same_as<TVec, i32x16> || std::same_as<TVec, u32x16>;
+} // namespace stado
+#endif
 
 #endif // INCLUDE_STADO_VECTOR_NATIVE_TYPES_I32X16_HPP

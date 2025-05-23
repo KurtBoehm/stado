@@ -285,7 +285,7 @@ class ConstUint {};
 // template for producing quiet NAN
 template<typename TVec>
 static inline TVec nan_vec(u32 payload = 0x100) {
-  if constexpr (std::is_same_v<typename TVec::element_type, f64>) {
+  if constexpr (std::is_same_v<typename TVec::Element, f64>) {
     // f64
     union {
       u64 q;
@@ -355,8 +355,8 @@ constexpr auto zero_mask(const std::array<int, tSize>& a) {
 // Parameter a is a reference to a constexpr int array of permutation indexes
 template<typename T, std::size_t tSize>
 constexpr auto zero_mask_broad(const std::array<int, tSize>& indices) {
-  using data_type = typename AllBitsSet<T>::Type;
-  std::array<data_type, tSize> u{0};
+  using Data = typename AllBitsSet<T>::Type;
+  std::array<Data, tSize> u{0};
   for (std::size_t i = 0; i < tSize; ++i) {
     u[i] = indices[i] >= 0 ? AllBitsSet<T>::value : 0;
   }

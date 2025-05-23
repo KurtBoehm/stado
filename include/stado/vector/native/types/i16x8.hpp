@@ -1,6 +1,7 @@
 #ifndef INCLUDE_STADO_VECTOR_NATIVE_TYPES_I16X8_HPP
 #define INCLUDE_STADO_VECTOR_NATIVE_TYPES_I16X8_HPP
 
+#include <concepts>
 #include <cstddef>
 #include <cstring>
 
@@ -118,7 +119,7 @@ struct x16x8 : public si128 {
       i64 q[2];
     } u;
     store(u.c);
-    int j = 0;
+    std::size_t j = 0;
     if ((n & 4U) != 0) {
       *reinterpret_cast<i64*>(p) = u.q[0];
       j += 8;
@@ -207,6 +208,9 @@ struct NativeVector<u16, 8> : public x16x8<NativeVector<u16, 8>, u16> {
   using x16x8<NativeVector<u16, 8>, u16>::x16x8;
 };
 using u16x8 = NativeVector<u16, 8>;
+
+template<typename TVec>
+concept AnyInt16x8 = std::same_as<TVec, i16x8> || std::same_as<TVec, u16x8>;
 } // namespace stado
 
 #endif // INCLUDE_STADO_VECTOR_NATIVE_TYPES_I16X8_HPP

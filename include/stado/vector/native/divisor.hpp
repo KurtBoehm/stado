@@ -17,7 +17,7 @@ public:
     set(d);
   }
   // Constructor with precalculated multiplier, shift and sign
-  DivisorI32(int m, int s1, int sgn)
+  DivisorI32(i32 m, i32 s1, i32 sgn)
       : multiplier_(_mm_set1_epi32(m)), shift1_(_mm_cvtsi32_si128(s1)), sign_(_mm_set1_epi32(sgn)) {
   }
   // Set or change divisor, calculate parameters
@@ -87,7 +87,7 @@ public:
     set(d);
   }
   // Constructor with precalculated multiplier and shifts
-  DivisorU32(u32 m, int s1, int s2)
+  DivisorU32(u32 m, i32 s1, i32 s2)
       : multiplier_(_mm_set1_epi32((i32)m)), shift1_(_mm_setr_epi32(s1, 0, 0, 0)),
         shift2_(_mm_setr_epi32(s2, 0, 0, 0)) {}
   // Set or change divisor, calculate parameters
@@ -156,7 +156,7 @@ public:
     set(d);
   }
   // Constructor with precalculated multiplier, shift and sign
-  DivisorI16(u16 m, int s1, int sgn)
+  DivisorI16(u16 m, i32 s1, i32 sgn)
       : multiplier_(_mm_set1_epi16(i16(m))), shift1_(_mm_setr_epi32(s1, 0, 0, 0)),
         sign_(_mm_set1_epi32(sgn)) {}
   void set(u16 d) { // Set or change divisor, calculate parameters
@@ -221,7 +221,7 @@ public:
     set(d);
   }
   // Constructor with precalculated multiplier and shifts
-  DivisorU16(u16 m, int s1, int s2)
+  DivisorU16(u16 m, i32 s1, i32 s2)
       : multiplier_(_mm_set1_epi16(i16(m))), shift1_(_mm_setr_epi32(s1, 0, 0, 0)),
         shift2_(_mm_setr_epi32(s2, 0, 0, 0)) {}
   // Set or change divisor, calculate parameters

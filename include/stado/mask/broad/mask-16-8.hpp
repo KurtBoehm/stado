@@ -47,7 +47,7 @@ struct BroadMask<16, 8> : public i16x8 {
   }
   // Extract a single element. Use store function if extracting more than one element.
   // Operator [] can only read an element, not write.
-  bool operator[](int index) const {
+  bool operator[](std::size_t index) const {
     return extract(index);
   }
   // Member function to change a bitfield to a boolean vector
@@ -134,7 +134,7 @@ static inline bool horizontal_and(const b16x8 a) {
 
 // horizontal_or. Returns true if at least one element is true
 static inline bool horizontal_or(const b16x8 a) {
-#if STADO_INSTRUCTION_SET >= STADO_SSE4_1 // SSE4.1. Use PTEST
+#if STADO_INSTRUCTION_SET >= STADO_SSE4_1 // use ptest
   return _mm_testz_si128(a, a) == 0;
 #else
   return _mm_movemask_epi8(a) != 0;

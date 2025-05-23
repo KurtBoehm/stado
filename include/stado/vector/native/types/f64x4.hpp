@@ -174,6 +174,6 @@ private:
 
 using f64x4 = NativeVector<f64, 4>;
 } // namespace stado
-#endif // AVX
+#endif
 
 #endif // INCLUDE_STADO_VECTOR_NATIVE_TYPES_F64X4_HPP

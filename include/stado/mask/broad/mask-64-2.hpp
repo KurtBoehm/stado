@@ -49,7 +49,7 @@ struct BroadMask<64, 2> : public i64x2 {
   }
   // Extract a single element. Use store function if extracting more than one element.
   // Operator [] can only read an element, not write.
-  bool operator[](int index) const {
+  bool operator[](std::size_t index) const {
     return extract(index);
   }
   // Member function to change a bitfield to a boolean vector

@@ -46,7 +46,7 @@ struct BroadMask<8, 16> : public i8x16 {
   // Member function to change a bitfield to a boolean vector
   BroadMask& load_bits(u16 a) {
     u16 an = u16(~a); // invert because we have no compare-not-equal
-#if STADO_INSTRUCTION_SET >= STADO_SSSE3 // pshufb available under SSSE3
+#if STADO_INSTRUCTION_SET >= STADO_SSSE3 // pshufb available
     __m128i a1 = _mm_cvtsi32_si128(an); // load into xmm register
     __m128i dist = _mm_setr_epi32(0, 0, 0x01010101, 0x01010101);
     __m128i a2 = _mm_shuffle_epi8(a1, dist); // one byte of a in each element
@@ -148,7 +148,7 @@ static inline bool horizontal_and(const b8x16 a) {
 
 // horizontal_or. Returns true if at least one element is true
 static inline bool horizontal_or(const b8x16 a) {
-#if STADO_INSTRUCTION_SET >= STADO_SSE4_1 // use PTEST
+#if STADO_INSTRUCTION_SET >= STADO_SSE4_1 // use ptest
   return _mm_testz_si128(a, a) == 0;
 #else
   return _mm_movemask_epi8(a) != 0;

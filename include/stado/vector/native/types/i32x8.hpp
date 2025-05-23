@@ -2,6 +2,7 @@
 #define INCLUDE_STADO_VECTOR_NATIVE_TYPES_I32X8_HPP
 
 #include <array>
+#include <concepts>
 #include <cstddef>
 
 #include "stado/defs.hpp"
@@ -168,7 +169,10 @@ struct NativeVector<u32, 8> : public x32x8<NativeVector<u32, 8>, u32> {
   using x32x8<NativeVector<u32, 8>, u32>::x32x8;
 };
 using u32x8 = NativeVector<u32, 8>;
+
+template<typename TVec>
+concept AnyInt32x8 = std::same_as<TVec, i32x8> || std::same_as<TVec, u32x8>;
 } // namespace stado
-#endif // AVX2
+#endif
 
 #endif // INCLUDE_STADO_VECTOR_NATIVE_TYPES_I32X8_HPP

@@ -1,6 +1,7 @@
 #ifndef INCLUDE_STADO_VECTOR_NATIVE_TYPES_I64X8_HPP
 #define INCLUDE_STADO_VECTOR_NATIVE_TYPES_I64X8_HPP
 
+#include <concepts>
 #include <cstddef>
 
 #include "stado/defs.hpp"
@@ -111,7 +112,10 @@ struct NativeVector<u64, 8> : public x64x8<NativeVector<u64, 8>, u64> {
   using x64x8<NativeVector<u64, 8>, u64>::x64x8;
 };
 using u64x8 = NativeVector<u64, 8>;
+
+template<typename TVec>
+concept AnyInt64x8 = std::same_as<TVec, i64x8> || std::same_as<TVec, u64x8>;
 } // namespace stado
-#endif // AVX512F
+#endif
 
 #endif // INCLUDE_STADO_VECTOR_NATIVE_TYPES_I64X8_HPP

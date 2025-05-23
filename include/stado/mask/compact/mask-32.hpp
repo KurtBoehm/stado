@@ -10,7 +10,6 @@
 
 // 32-bit and 64-bit masks require AVX512BW
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL
-
 namespace stado {
 // Compact vector of 32 booleans
 template<>
