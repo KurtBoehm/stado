@@ -16,7 +16,7 @@ struct PartMaskCreator;
 template<std::size_t tElementBits, std::size_t tSize>
 struct PartMaskCreator<BroadMask<tElementBits, tSize>> {
   using Mask = BroadMask<tElementBits, tSize>;
-  using Element = BitUInt<tElementBits>;
+  using Element = BitInt<tElementBits>;
   using Base = NativeVector<Element, tSize>;
 
   static Mask create(const std::size_t part) {

@@ -5,6 +5,7 @@
 #include "operations/convert-elements.hpp"
 #include "operations/lookup-masked.hpp"
 #include "operations/lookup-part.hpp"
+#include "operations/shuffle.hpp"
 // IWYU pragma: end_exports
 
 #endif // INCLUDE_STADO_VECTOR_OPERATIONS_HPP

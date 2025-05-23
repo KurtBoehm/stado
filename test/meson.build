@@ -10,11 +10,12 @@ foreach name, deps : {
 }
   test(
     name,
-    executable('test-' + name,
+    executable(
+      'test-' + name,
       [f'@name@.cpp'],
       override_options: opts,
       cpp_args: args,
       dependencies: [stado_dep] + deps,
-    )
+    ),
   )
 endforeach
