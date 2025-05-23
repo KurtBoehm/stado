@@ -36,7 +36,7 @@ struct x32x16 : public si512 {
   // Assignment operator to convert from type __m512i used in intrinsics:
   TDerived& operator=(const __m512i x) {
     zmm = x;
-    return der();
+    return derived();
   }
   // Type cast operator to convert to __m512i used in intrinsics
   operator __m512i() const {
@@ -45,22 +45,22 @@ struct x32x16 : public si512 {
   // Member function to load from array (unaligned)
   TDerived& load(const void* p) {
     zmm = _mm512_loadu_si512(p);
-    return der();
+    return derived();
   }
   // Member function to load from array, aligned by 64
   TDerived& load_a(const void* p) {
     zmm = _mm512_load_si512(p);
-    return der();
+    return derived();
   }
   // Partial load. Load n elements and set the rest to 0
   TDerived& load_partial(std::size_t n, const void* p) {
     zmm = _mm512_maskz_loadu_epi32(__mmask16((1U << n) - 1), p);
-    return der();
+    return derived();
   }
   template<std::size_t n>
   TDerived& load_partial(const void* p) {
     zmm = _mm512_maskz_loadu_epi32(__mmask16((1U << n) - 1), p);
-    return der();
+    return derived();
   }
   // Partial store. Store n elements
   void store_partial(std::size_t n, void* p) const {
@@ -69,12 +69,12 @@ struct x32x16 : public si512 {
   // cut off vector to n elements. The last 16-n elements are set to zero
   TDerived& cutoff(std::size_t n) {
     zmm = _mm512_maskz_mov_epi32(__mmask16((1U << n) - 1), zmm);
-    return der();
+    return derived();
   }
   // Member function to change a single element in vector
   TDerived& insert(std::size_t index, T value) {
     zmm = _mm512_mask_set1_epi32(zmm, __mmask16(1U << index), i32(value));
-    return der();
+    return derived();
   }
   // Member function extract a single element from vector
   [[nodiscard]] T extract(std::size_t index) const {
@@ -95,10 +95,10 @@ struct x32x16 : public si512 {
   }
 
 private:
-  [[nodiscard]] const TDerived& der() const {
+  [[nodiscard]] const TDerived& derived() const {
     return static_cast<const TDerived&>(*this);
   }
-  [[nodiscard]] TDerived& der() {
+  [[nodiscard]] TDerived& derived() {
     return static_cast<TDerived&>(*this);
   }
 };

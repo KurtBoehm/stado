@@ -148,11 +148,10 @@ struct NativeVector<f32, 4> : public NativeVectorBase<f32, 4> {
     if (u32(n) >= 4) {
       return *this;
     }
-    const union {
-      i32 i[8];
-      f32 f[8];
-    } mask = {{1, -1, -1, -1, 0, 0, 0, 0}};
-    xmm_ = _mm_and_ps(xmm_, NativeVector().load(mask.f + 4 - n));
+    __m128i idxs = _mm_setr_epi32(0, 1, 2, 3);
+    __m128i ref = _mm_set1_epi32(i32(n));
+    __m128 mask = _mm_castsi128_ps(_mm_cmpgt_epi32(ref, idxs));
+    xmm_ = _mm_and_ps(mask, *this);
 #endif
     return *this;
   }
