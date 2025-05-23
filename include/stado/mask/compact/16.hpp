@@ -5,7 +5,7 @@
 
 #include "stado/defs.hpp"
 #include "stado/instruction-set.hpp"
-#include "stado/mask/broad/mask-32-8.hpp"
+#include "stado/mask/broad/32x08.hpp"
 #include "stado/mask/compact/base.hpp"
 
 #if STADO_INSTRUCTION_SET >= STADO_AVX512F

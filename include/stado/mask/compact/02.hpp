@@ -5,8 +5,8 @@
 
 #include "stado/defs.hpp"
 #include "stado/instruction-set.hpp"
+#include "stado/mask/compact/08.hpp"
 #include "stado/mask/compact/base.hpp"
-#include "stado/mask/compact/mask-8.hpp"
 
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL
 namespace stado {

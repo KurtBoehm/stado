@@ -5,7 +5,7 @@
 
 #include "stado/defs.hpp"
 #include "stado/instruction-set.hpp"
-#include "stado/mask/compact/mask-8.hpp"
+#include "stado/mask/compact/08.hpp"
 #include "stado/vector/native/operations/i64x4.hpp"
 #include "stado/vector/native/types/i32x16.hpp"
 #include "stado/vector/native/types/i64x8.hpp"

@@ -5,8 +5,8 @@
 
 #include "stado/defs.hpp"
 #include "stado/instruction-set.hpp"
+#include "stado/mask/broad/16x08.hpp"
 #include "stado/mask/broad/base.hpp"
-#include "stado/mask/broad/mask-16-8.hpp"
 #include "stado/vector/native/types/base-256.hpp"
 #include "stado/vector/native/types/i16x16.hpp"
 #include "stado/vector/native/types/i16x8.hpp"

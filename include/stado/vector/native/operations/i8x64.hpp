@@ -3,7 +3,7 @@
 
 #include "stado/defs.hpp"
 #include "stado/instruction-set.hpp"
-#include "stado/mask/compact/mask-64.hpp"
+#include "stado/mask/compact/64.hpp"
 #include "stado/vector/native/operations/i64x8.hpp"
 #include "stado/vector/native/operations/i8x32.hpp"
 #include "stado/vector/native/types/i32x16.hpp"

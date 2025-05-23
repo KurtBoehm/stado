@@ -1,13 +1,13 @@
-#ifndef INCLUDE_STADO_MASK_BROAD_64X4_HPP
-#define INCLUDE_STADO_MASK_BROAD_64X4_HPP
+#ifndef INCLUDE_STADO_MASK_BROAD_64X04_HPP
+#define INCLUDE_STADO_MASK_BROAD_64X04_HPP
 
 #include <array>
 #include <cstddef>
 
 #include "stado/defs.hpp"
 #include "stado/instruction-set.hpp"
+#include "stado/mask/broad/64x02.hpp"
 #include "stado/mask/broad/base.hpp"
-#include "stado/mask/broad/mask-64-2.hpp"
 #include "stado/vector/native/types/base-256.hpp"
 
 #if STADO_INSTRUCTION_SET >= STADO_AVX
@@ -230,4 +230,4 @@ static inline u8 to_bits(const b64x4 x) {
 } // namespace stado
 #endif
 
-#endif // INCLUDE_STADO_MASK_BROAD_64X4_HPP
+#endif // INCLUDE_STADO_MASK_BROAD_64X04_HPP

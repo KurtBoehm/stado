@@ -3,19 +3,19 @@
 
 #include "stado/defs.hpp"
 #include "stado/instruction-set.hpp"
-#include "stado/mask/compact/mask-16.hpp"
-#include "stado/mask/compact/mask-8.hpp"
+#include "stado/mask/compact/08.hpp"
+#include "stado/mask/compact/16.hpp"
 
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL
-#include "stado/mask/compact/mask-2.hpp"
-#include "stado/mask/compact/mask-32.hpp"
-#include "stado/mask/compact/mask-4.hpp"
-#include "stado/mask/compact/mask-64.hpp"
+#include "stado/mask/compact/02.hpp"
+#include "stado/mask/compact/04.hpp"
+#include "stado/mask/compact/32.hpp"
+#include "stado/mask/compact/64.hpp"
 #endif
 
 #if STADO_INSTRUCTION_SET == STADO_AVX512F
-#include "stado/mask/broad/mask-32-8.hpp"
-#include "stado/mask/broad/mask-64-4.hpp"
+#include "stado/mask/broad/32x08.hpp"
+#include "stado/mask/broad/64x04.hpp"
 #endif
 
 namespace stado {
