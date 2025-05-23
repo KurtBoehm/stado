@@ -217,7 +217,7 @@ static inline u32 bit_scan_forward(u64 a) {
   // defined in intrin.h for MS and Intel compilers
   unsigned long r;
   _BitScanForward64(&r, a);
-  return (u32)r;
+  return u32(r);
 }
 #endif
 
@@ -387,7 +387,7 @@ constexpr u64 make_bit_mask(const std::array<int, tSize>& indices) {
       s = (tBits >> 10) & 1;
     } else {
       // extract selected bit
-      s = ((u32)ix >> j) & 1;
+      s = (u32(ix) >> j) & 1;
       // 1 if bit not flipped
       u64 f = 0;
       if (i < tSize / 2) {
@@ -609,7 +609,7 @@ constexpr PermFlags perm_flags(const std::array<int, TVec::size>& a) {
           addz2 |= 2U;
         }
         compresslasti = ix;
-        compresslastp = i;
+        compresslastp = int(i);
       } else {
         // does not fit perm_compress
         patfail |= 2U;
@@ -620,7 +620,7 @@ constexpr PermFlags perm_flags(const std::array<int, TVec::size>& a) {
           addz2 |= 4; // perm_expand may need additional zeroing
         }
         expandlasti = ix;
-        expandlastp = i;
+        expandlastp = int(i);
       } else {
         // does not fit perm_compress
         patfail |= 4U;
@@ -693,7 +693,7 @@ constexpr PermFlags perm_flags(const std::array<int, TVec::size>& a) {
             fit = false;
           }
         }
-        if ((u32)lanepattern[i] != (i ^ 1)) {
+        if (u32(lanepattern[i]) != (i ^ 1)) {
           fitswap = false;
         }
       }
@@ -839,7 +839,7 @@ constexpr u64 compress_mask(const std::array<int, tSize>& indices) {
       for (std::size_t j = 1; j < i - lastp; ++j) {
         m |= u64{1} << (lasti + j); // dummy filling source
       }
-      lastp = i;
+      lastp = int(i);
       lasti = ix;
     }
   }
@@ -861,7 +861,7 @@ constexpr u64 expand_mask(const std::array<int, tSize>& indices) {
       for (int j = 1; j < ix - lasti; ++j) {
         m |= u64{1} << (lastp + j); // dummy filling destination
       }
-      lastp = i;
+      lastp = int(i);
       lasti = ix;
     }
   }
@@ -924,7 +924,7 @@ constexpr u64 perm16_flags(const std::array<int, TVec::size>& indices) {
   }
   // join return data
   for (std::size_t i = 0; i < 4; ++i) {
-    retval |= (u64)pat[i] << (32 + i * 8);
+    retval |= u64(pat[i]) << (32 + i * 8);
   }
   return retval;
 }
@@ -957,7 +957,7 @@ constexpr auto pshufb_mask(const std::array<int, T::size>& indices) {
       }
       ix -= int(lane * elements_per_lane); // index relative to lane
       if (ix >= 0 && ix < (int)elements_per_lane) { // index points to desired lane
-        p = (i8)ix * elementsize;
+        p = i8(ix) * elementsize;
       }
       for (std::size_t j = 0; j < elementsize; ++j) { // loop through bytes in element
         u[k++] = p < 0 ? i8(-1) : i8(p + j); // store byte permutation index

@@ -172,7 +172,7 @@ struct NativeVector<f32, 4> : public NativeVectorBase<f32, 4> {
     // broadcast value into all elements
     __m128 broad = _mm_set1_ps(value);
     // mask with FFFFFFFF at index position
-    __m128 mask = _mm_loadu_ps((const f32*)(maskl + 4 - (index & 3)));
+    __m128 mask = _mm_loadu_ps(reinterpret_cast<const f32*>(maskl + 4 - (index & 3)));
     xmm_ = _mm_or_ps(_mm_and_ps(mask, broad), _mm_andnot_ps(mask, xmm_));
 #endif
     return *this;

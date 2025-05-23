@@ -54,8 +54,8 @@ struct BroadMask<8, 16> : public i8x16 {
     __m128i mask = _mm_setr_epi32(0x08040201, i32(0x80402010), 0x08040201, i32(0x80402010));
     __m128i a3 = _mm_and_si128(a2, mask); // isolate one bit in each byte
 #else
-    __m128i b1 = _mm_set1_epi8((i8)an); // broadcast low byte
-    __m128i b2 = _mm_set1_epi8((i8)(an >> 8)); // broadcast high byte
+    __m128i b1 = _mm_set1_epi8(i8(an)); // broadcast low byte
+    __m128i b2 = _mm_set1_epi8(i8(an >> 8)); // broadcast high byte
     __m128i m1 = _mm_setr_epi32(0x08040201, i32(0x80402010), 0, 0);
     __m128i m2 = _mm_setr_epi32(0, 0, 0x08040201, i32(0x80402010));
     __m128i c1 = _mm_and_si128(b1, m1); // isolate one bit in each byte of lower half

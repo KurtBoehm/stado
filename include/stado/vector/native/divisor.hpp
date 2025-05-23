@@ -88,7 +88,7 @@ public:
   }
   // Constructor with precalculated multiplier and shifts
   DivisorU32(u32 m, i32 s1, i32 s2)
-      : multiplier_(_mm_set1_epi32((i32)m)), shift1_(_mm_setr_epi32(s1, 0, 0, 0)),
+      : multiplier_(_mm_set1_epi32(i32(m))), shift1_(_mm_setr_epi32(s1, 0, 0, 0)),
         shift2_(_mm_setr_epi32(s2, 0, 0, 0)) {}
   // Set or change divisor, calculate parameters
   void set(u32 d) {
@@ -120,9 +120,9 @@ public:
       sh1 = 1;
       sh2 = l - 1; // shift counts
     }
-    multiplier_ = _mm_set1_epi32((i32)m);
-    shift1_ = _mm_setr_epi32((i32)sh1, 0, 0, 0);
-    shift2_ = _mm_setr_epi32((i32)sh2, 0, 0, 0);
+    multiplier_ = _mm_set1_epi32(i32(m));
+    shift1_ = _mm_setr_epi32(i32(sh1), 0, 0, 0);
+    shift2_ = _mm_setr_epi32(i32(sh2), 0, 0, 0);
   }
   // get multiplier
   __m128i getm() const {
@@ -165,7 +165,7 @@ public:
     i32 m;
     if (d1 > 1) {
       // shift count = ceil(log2(d1))-1 = (bit_scan_reverse(d1-1)+1)-1
-      sh = (i32)bit_scan_reverse(u32(d1 - 1));
+      sh = i32(bit_scan_reverse(u32(d1 - 1)));
       // calculate multiplier
       m = ((i32(1) << (16 + sh)) / d1 - ((i32(1) << 16) - 1));
     } else {
@@ -248,7 +248,7 @@ public:
     default:
       // general case for d > 2
       // ceil(log2(d))
-      u16 l = (u16)bit_scan_reverse(d - 1U) + 1U;
+      u16 l = u16(bit_scan_reverse(d - 1U)) + 1U;
       // 2^L, overflow to 0 if L = 16
       u16 l2 = u16(1 << l);
       // multiplier
@@ -258,8 +258,8 @@ public:
       sh2 = l - 1;
     }
     multiplier_ = _mm_set1_epi16(i16(m));
-    shift1_ = _mm_setr_epi32((i32)sh1, 0, 0, 0);
-    shift2_ = _mm_setr_epi32((i32)sh2, 0, 0, 0);
+    shift1_ = _mm_setr_epi32(i32(sh1), 0, 0, 0);
+    shift2_ = _mm_setr_epi32(i32(sh2), 0, 0, 0);
   }
   // get multiplier
   __m128i getm() const {

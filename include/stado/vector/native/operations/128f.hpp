@@ -119,9 +119,9 @@ inline f32x4 permute4(const f32x4 a) {
       constexpr auto mask = (i0 & 3U) | (i1 & 3U) << 2U | (i2 & 3U) << 4U | (i3 & 3U) << 6U;
 #if STADO_INSTRUCTION_SET >= STADO_AVX
       y = _mm_permute_ps(a, mask);
-#else // AVX
+#else
       y = _mm_shuffle_ps(a, a, mask);
-#endif // AVX
+#endif
     }
   }
   if constexpr (flags.zeroing) {
@@ -484,7 +484,7 @@ template<int i0, int i1, int i2, int i3>
 inline void scatter(const f32x4 data, f32* destination) {
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL //  AVX512VL
   __m128i indx = _mm_setr_epi32(i0, i1, i2, i3);
-  __mmask8 mask = u8((i0 >= 0) | ((i1 >= 0) << 1) | ((i2 >= 0) << 2) | ((i3 >= 0) << 3));
+  __mmask8 mask = (i0 >= 0) | ((i1 >= 0) << 1) | ((i2 >= 0) << 2) | ((i3 >= 0) << 3);
   _mm_mask_i32scatter_ps(destination, mask, indx, data, 4);
 
 #elif STADO_INSTRUCTION_SET >= STADO_AVX512F

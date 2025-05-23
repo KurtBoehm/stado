@@ -30,7 +30,7 @@ inline BroadMask<32, 8> CompactMask<16>::get_low() const {
   return BroadMask<32, 8>().load_bits(u8(mm));
 }
 inline BroadMask<32, 8> CompactMask<16>::get_high() const {
-  return BroadMask<32, 8>().load_bits(u8((u16)mm >> 8U));
+  return BroadMask<32, 8>().load_bits(u8(u16(mm) >> 8U));
 }
 inline BroadMask<64, 4> CompactMask<8>::get_low() const {
   return BroadMask<64, 4>().load_bits(mm & 0xFU);
@@ -49,7 +49,7 @@ inline CompactMask<8> CompactMask<16>::get_low() const {
   return CompactMask<8>().load_bits(u8(mm));
 }
 inline CompactMask<8> CompactMask<16>::get_high() const {
-  return CompactMask<8>().load_bits(u8((u16)mm >> 8U));
+  return CompactMask<8>().load_bits(u8(u16(mm) >> 8U));
 }
 #endif
 #endif

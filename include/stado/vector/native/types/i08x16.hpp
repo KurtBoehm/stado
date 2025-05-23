@@ -125,15 +125,15 @@ struct x8x16 : public si128 {
     store(u.c);
     std::size_t j = 0;
     if (n & 8) {
-      *(i64*)p = u.q[0];
+      *reinterpret_cast<i64*>(p) = u.q[0];
       j += 8;
     }
     if (n & 4) {
-      ((i32*)p)[j / 4] = u.i[j / 4];
+      reinterpret_cast<i32*>(p)[j / 4] = u.i[j / 4];
       j += 4;
     }
     if (n & 2) {
-      ((i16*)p)[j / 2] = u.s[j / 2];
+      reinterpret_cast<i16*>(p)[j / 2] = u.s[j / 2];
       j += 2;
     }
     if (n & 1) {

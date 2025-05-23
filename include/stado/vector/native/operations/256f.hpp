@@ -231,10 +231,10 @@ inline f64x4 blend4(const f64x4 a, const f64x4 b) {
                     (i3 < 0 ? i3 : i3 & 3)>(b);
   }
   if constexpr ((flags & (blend_perma | blend_permb)) == 0) { // no permutation, only blending
-    constexpr auto mb = (u8)make_bit_mask<4, 0x302>(indexs); // blend mask
+    constexpr auto mb = u8(make_bit_mask<4, 0x302>(indexs)); // blend mask
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // AVX512VL
     y = _mm256_mask_mov_pd(a, mb, b);
-#else // AVX
+#else
     y = _mm256_blend_pd(a, b, mb); // duplicate each bit
 #endif
   } else if constexpr ((flags & blend_largeblock) != 0) { // blend and permute 128-bit blocks
@@ -264,7 +264,7 @@ inline f64x4 blend4(const f64x4 a, const f64x4 b) {
     constexpr std::array<int, 8> arr = blend_perm_indexes<4, 0>(indexs); // get permutation indexes
     __m256d ya = permute4<arr[0], arr[1], arr[2], arr[3]>(a);
     __m256d yb = permute4<arr[4], arr[5], arr[6], arr[7]>(b);
-    constexpr u8 mb = (u8)make_bit_mask<4, 0x302>(indexs); // blend mask
+    constexpr u8 mb = u8(make_bit_mask<4, 0x302>(indexs)); // blend mask
     y = _mm256_blend_pd(ya, yb, mb);
 #endif
   }
@@ -310,10 +310,10 @@ inline f32x8 blend8(const f32x8 a, const f32x8 b) {
     return permute8<l[8], l[9], l[10], l[11], l[12], l[13], l[14], l[15]>(b);
   } else if constexpr ((flags & (blend_perma | blend_permb)) ==
                        0) { // no permutation, only blending
-    constexpr auto mb = (u8)make_bit_mask<8, 0x303>(indexs); // blend mask
+    constexpr auto mb = u8(make_bit_mask<8, 0x303>(indexs)); // blend mask
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // AVX512VL
     y = _mm256_mask_mov_ps(a, mb, b);
-#else // AVX2
+#else
     y = _mm256_blend_ps(a, b, mb);
 #endif
   }
@@ -340,7 +340,7 @@ inline f32x8 blend8(const f32x8 a, const f32x8 b) {
     constexpr std::array<int, 16> arr = blend_perm_indexes<8, 0>(indexs); // get permutation indexes
     __m256 ya = permute8<arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], arr[7]>(a);
     __m256 yb = permute8<arr[8], arr[9], arr[10], arr[11], arr[12], arr[13], arr[14], arr[15]>(b);
-    constexpr u8 mb = (u8)make_bit_mask<8, 0x303>(indexs); // blend mask
+    constexpr u8 mb = u8(make_bit_mask<8, 0x303>(indexs)); // blend mask
     y = _mm256_blend_ps(ya, yb, mb);
 #endif
   }
@@ -381,7 +381,7 @@ inline f32x8 lookup_bounded(const i32x8 index, const f32* table) {
 inline f64x4 lookup4(const AnyInt64x4 auto index, const f64x4 table) {
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // AVX512VL
   return _mm256_permutexvar_pd(index, table);
-#else // AVX2
+#else
   // We can't use VPERMPD because it has constant indexes,
   // vpermilpd can permute only within 128-bit lanes
   // Convert the index to fit VPERMPS
@@ -391,16 +391,16 @@ inline f64x4 lookup4(const AnyInt64x4 auto index, const f64x4 table) {
 #endif
 }
 
-inline f64x4 lookup(const AnyInt32x4 auto index, const double* table) {
+inline f64x4 lookup(const AnyInt32x4 auto index, const f64* table) {
   return _mm256_i32gather_pd(table, index, 8);
 }
 
-inline f64x4 lookup(const AnyInt64x4 auto index, const double* table) {
+inline f64x4 lookup(const AnyInt64x4 auto index, const f64* table) {
   return _mm256_i64gather_pd(table, index, 8);
 }
 
 template<std::size_t n>
-inline f64x4 lookup_bounded(const AnyInt64x4 auto index, const double* table) {
+inline f64x4 lookup_bounded(const AnyInt64x4 auto index, const f64* table) {
   if constexpr (n == 0) {
     return 0;
   }
@@ -423,7 +423,7 @@ template<int i0, int i1, int i2, int i3>
 inline f64x4 gather4d(const void* a) {
   return reinterpret_d(gather4q<i0, i1, i2, i3>(a));
 }
-#endif // AVX2
+#endif
 
 template<int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7>
 inline void scatter(const f32x8 data, f32* array) {
@@ -448,7 +448,7 @@ inline void scatter(const f32x8 data, f32* array) {
 }
 
 template<int i0, int i1, int i2, int i3>
-inline void scatter(const f64x4 data, double* array) {
+inline void scatter(const f64x4 data, f64* array) {
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL //  AVX512VL
   __m128i indx = _mm_setr_epi32(i0, i1, i2, i3);
   __mmask8 mask = (i0 >= 0) | ((i1 >= 0) << 1) | ((i2 >= 0) << 2) | ((i3 >= 0) << 3);
@@ -486,7 +486,7 @@ inline void scatter(const i32x8 index, u32 limit, const f32x8 data, f32* destina
 #endif
 }
 
-inline void scatter(const i64x4 index, u32 limit, const f64x4 data, double* destination) {
+inline void scatter(const i64x4 index, u32 limit, const f64x4 data, f64* destination) {
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL //  AVX512VL
   __mmask8 mask = _mm256_cmplt_epu64_mask(index, (u64x4(u64(limit))));
   _mm256_mask_i64scatter_pd(destination, mask, index, data, 8);
@@ -503,10 +503,9 @@ inline void scatter(const i64x4 index, u32 limit, const f64x4 data, double* dest
   }
 #endif
 }
+#endif
 
-#endif // AVX2
-
-inline void scatter(const i32x4 index, u32 limit, const f64x4 data, double* destination) {
+inline void scatter(const i32x4 index, u32 limit, const f64x4 data, f64* destination) {
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL //  AVX512VL
   __mmask8 mask = _mm_cmplt_epu32_mask(index, (u32x4(limit)));
   _mm256_mask_i32scatter_pd(destination, mask, index, data, 8);

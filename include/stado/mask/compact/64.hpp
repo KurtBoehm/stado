@@ -165,7 +165,7 @@ static inline CompactMask<64> andnot(const CompactMask<64> a, const CompactMask<
 
 // horizontal_and. Returns true if all bits are 1
 static inline bool horizontal_and(const CompactMask<64> a) {
-  return i64(__mmask64(a)) == -(i64)(1);
+  return i64(__mmask64(a)) == -i64(1);
 }
 
 // horizontal_or. Returns true if at least one bit is 1

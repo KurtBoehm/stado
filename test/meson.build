@@ -1,5 +1,4 @@
 options_sub = subproject('options')
-opts = options_sub.get_variable('all_opts')
 args = options_sub.get_variable('all_args')
 
 benchmark_dep = dependency('benchmark')
@@ -21,7 +20,6 @@ foreach name, deps : {
     executable(
       'test-' + name,
       [f'@name@.cpp'],
-      override_options: opts,
       cpp_args: args,
       dependencies: [stado_dep] + deps,
     ),

@@ -51,13 +51,16 @@ struct x32x4 : public si128 {
 #else
     switch (n) {
     case 0: *this = 0; break;
-    case 1: xmm = _mm_cvtsi32_si128(*(const i32*)p); break;
+    case 1: xmm = _mm_cvtsi32_si128(*reinterpret_cast<const i32*>(p)); break;
     case 2:
       // intrinsic for movq is missing!
-      xmm = _mm_setr_epi32(((const i32*)p)[0], ((const i32*)p)[1], 0, 0);
+      xmm = _mm_setr_epi32((reinterpret_cast<const i32*>(p))[0],
+                           (reinterpret_cast<const i32*>(p))[1], 0, 0);
       break;
     case 3:
-      xmm = _mm_setr_epi32(((const i32*)p)[0], ((const i32*)p)[1], ((const i32*)p)[2], 0);
+      xmm =
+        _mm_setr_epi32((reinterpret_cast<const i32*>(p))[0], (reinterpret_cast<const i32*>(p))[1],
+                       (reinterpret_cast<const i32*>(p))[2], 0);
       break;
     case 4: load(p); break;
     default: break;

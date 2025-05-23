@@ -145,7 +145,7 @@ static inline bool horizontal_or(const b16x8 a) {
 // to_bits: convert boolean vector to integer bitfield
 static inline u8 to_bits(const b16x8 x) {
   __m128i a = _mm_packs_epi16(x, x); // 16-bit words to bytes
-  return (u8)_mm_movemask_epi8(a);
+  return u8(_mm_movemask_epi8(a));
 }
 } // namespace stado
 

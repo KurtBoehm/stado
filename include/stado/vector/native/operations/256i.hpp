@@ -456,10 +456,10 @@ inline i64x4 blend4(const i64x4 a, const i64x4 b) {
                     (i3 < 0 ? i3 : i3 & 3)>(b);
   }
   if constexpr ((flags & (blend_perma | blend_permb)) == 0) { // no permutation, only blending
-    constexpr u8 mb = (u8)make_bit_mask<4, 0x302>(indexs); // blend mask
+    constexpr u8 mb = u8(make_bit_mask<4, 0x302>(indexs)); // blend mask
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // AVX512VL
     y = _mm256_mask_mov_epi64(a, mb, b);
-#else // AVX2
+#else
     y = _mm256_blend_epi32(
       a, b, ((mb & 1) | (mb & 2) << 1 | (mb & 4) << 2 | (mb & 8) << 3) * 3); // duplicate each bit
 #endif
@@ -500,7 +500,7 @@ inline i64x4 blend4(const i64x4 a, const i64x4 b) {
     constexpr std::array<int, 8> arr = blend_perm_indexes<4, 0>(indexs); // get permutation indexes
     __m256i ya = permute4<arr[0], arr[1], arr[2], arr[3]>(a);
     __m256i yb = permute4<arr[4], arr[5], arr[6], arr[7]>(b);
-    constexpr u8 mb = (u8)make_bit_mask<4, 0x302>(indexs); // blend mask
+    constexpr u8 mb = u8(make_bit_mask<4, 0x302>(indexs)); // blend mask
     y = _mm256_blend_epi32(ya, yb,
                            ((mb & 1) | (mb & 2) << 1 | (mb & 4) << 2 | (mb & 8) << 3) *
                              3); // duplicate each bit
@@ -549,10 +549,10 @@ inline i32x8 blend8(const i32x8 a, const i32x8 b) {
     return permute8<arr[8], arr[9], arr[10], arr[11], arr[12], arr[13], arr[14], arr[15]>(b);
   } else if constexpr ((flags & (blend_perma | blend_permb)) ==
                        0) { // no permutation, only blending
-    constexpr u8 mb = (u8)make_bit_mask<8, 0x303>(indexs); // blend mask
+    constexpr u8 mb = u8(make_bit_mask<8, 0x303>(indexs)); // blend mask
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // AVX512VL
     y = _mm256_mask_mov_epi32(a, mb, b);
-#else // AVX2
+#else
     y = _mm256_blend_epi32(a, b, mb);
 #endif
   }
@@ -589,7 +589,7 @@ inline i32x8 blend8(const i32x8 a, const i32x8 b) {
     constexpr std::array<int, 16> arr = blend_perm_indexes<8, 0>(indexs); // get permutation indexes
     __m256i ya = permute8<arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], arr[7]>(a);
     __m256i yb = permute8<arr[8], arr[9], arr[10], arr[11], arr[12], arr[13], arr[14], arr[15]>(b);
-    constexpr u8 mb = (u8)make_bit_mask<8, 0x303>(indexs); // blend mask
+    constexpr u8 mb = u8(make_bit_mask<8, 0x303>(indexs)); // blend mask
     y = _mm256_blend_epi32(ya, yb, mb);
 #endif
   }
@@ -674,12 +674,12 @@ inline i16x16 blend16(const i16x16 a, const i16x16 b) {
       yb = permute16<arr[16], arr[17], arr[18], arr[19], arr[20], arr[21], arr[22], arr[23],
                      arr[24], arr[25], arr[26], arr[27], arr[28], arr[29], arr[30], arr[31]>(yb);
     }
-    constexpr u16 mb = (u16)make_bit_mask<16, 0x304>(indexs); // blend mask
+    constexpr u16 mb = u16(make_bit_mask<16, 0x304>(indexs)); // blend mask
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // AVX512VL
     y = _mm256_mask_mov_epi16(ya, mb, yb);
-#else // AVX2
+#else
     if ((flags & blend_same_pattern) != 0) { // same blend pattern in both 128-bit lanes
-      y = _mm256_blend_epi16(ya, yb, (u8)mb);
+      y = _mm256_blend_epi16(ya, yb, u8(mb));
     } else {
       constexpr std::array<i16, 16> bm = make_broad_mask<i16, 16>(mb);
       y = _mm256_blendv_epi8(ya, yb, i16x16().load(bm.data()));
@@ -768,10 +768,10 @@ inline i8x32 blend32(const i8x32 a, const i8x32 b) {
                      arr[48], arr[49], arr[50], arr[51], arr[52], arr[53], arr[54], arr[55],
                      arr[56], arr[57], arr[58], arr[59], arr[60], arr[61], arr[62], arr[63]>(yb);
     }
-    constexpr u32 mb = (u32)make_bit_mask<32, 0x305>(indexs); // blend mask
+    constexpr u32 mb = u32(make_bit_mask<32, 0x305>(indexs)); // blend mask
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // AVX512VL
     y = _mm256_mask_mov_epi8(ya, mb, yb);
-#else // AVX2
+#else
     constexpr std::array<stado::i8, 32> bm = make_broad_mask<stado::i8, 32>(mb);
     y = _mm256_blendv_epi8(ya, yb, i8x32().load(bm.data()));
 #endif
@@ -917,7 +917,7 @@ inline NativeVector<TVal, 8> lookup_bounded(const TIdx index, const TVal* table)
   }
   if constexpr (n <= 16) {
     i32x8 table1 = i32x8().load(table);
-    i32x8 table2 = i32x8().load((const i32*)table + 8);
+    i32x8 table2 = i32x8().load(reinterpret_cast<const i32*>(table) + 8);
     i32x8 y1 = lookup8(index, table1);
     i32x8 y2 = lookup8(index, table2);
     Mask<32, 8> s = index > 7;
@@ -1787,7 +1787,7 @@ inline u16x16 divide_by_ui(const u16x16 x) {
   if constexpr (d0 == 1) {
     return x; // divide by 1
   }
-  constexpr int b = bit_scan_reverse_const((u32)d0); // floor(log2(d))
+  constexpr int b = bit_scan_reverse_const(u32(d0)); // floor(log2(d))
   if constexpr ((d0 & (d0 - 1)) == 0) {
     // d is a power of 2. use shift
     return _mm256_srli_epi16(x, b); // x >> b
@@ -1807,7 +1807,7 @@ inline u16x16 divide_by_ui(const u16x16 x) {
   if constexpr (round_down) {
     Mask<16, 16> overfl = (x1 == u16x16(_mm256_setzero_si256())); // check for overflow of x+1
     // deal with overflow (rarely needed)
-    return select(overfl, u16x16(u16(mult1 >> (u16)b)), q);
+    return select(overfl, u16x16(u16(mult1 >> u16(b))), q);
   } else {
     return q; // no overflow possible
   }

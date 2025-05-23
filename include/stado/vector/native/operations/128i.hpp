@@ -413,7 +413,7 @@ inline i8x16 permute16(const i8x16 a) {
         u64 r = 0; // return value
         u8 i = (k >> 1) & 1; // look at odd indexes if destination is odd
         for (; i < 16; i += 2) {
-          ix = (indexs[i] >= 0 && ((indexs[i] ^ k) & 1) == 0) ? (u8)indexs[i] / 2U : 0xFFU;
+          ix = (indexs[i] >= 0 && ((indexs[i] ^ k) & 1) == 0) ? u8(indexs[i]) / 2U : 0xFFU;
           r |= u64(ix) << (i / 2U * 8U);
         }
         return r;
@@ -569,7 +569,7 @@ inline i64x2 blend2(const i64x2 a, const i64x2 b) {
 
   if constexpr ((flags & (blend_perma | blend_permb)) == 0) { // no permutation, only blending
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // AVX512VL
-    y = _mm_mask_mov_epi64(a, (u8)make_bit_mask<2, 0x301>(indexs), b);
+    y = _mm_mask_mov_epi64(a, u8(make_bit_mask<2, 0x301>(indexs)), b);
 #elif STADO_INSTRUCTION_SET >= STADO_SSE4_1
     y = _mm_blend_epi16(a, b, ((i0 & 2) ? 0x0F : 0) | ((i1 & 2) ? 0xF0 : 0));
 #else // SSE2
@@ -616,7 +616,7 @@ inline i64x2 blend2(const i64x2 a, const i64x2 b) {
     __m128i ya = permute2<arr[0], arr[1]>(a);
     __m128i yb = permute2<arr[2], arr[3]>(b);
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // AVX512VL
-    y = _mm_mask_mov_epi64(ya, (u8)make_bit_mask<2, 0x301>(indexs), yb);
+    y = _mm_mask_mov_epi64(ya, u8(make_bit_mask<2, 0x301>(indexs)), yb);
 #elif STADO_INSTRUCTION_SET >= STADO_SSE4_1
     y = _mm_blend_epi16(ya, yb, ((i0 & 2) ? 0x0F : 0) | ((i1 & 2) ? 0xF0 : 0));
 #else // SSE2
@@ -717,7 +717,7 @@ inline i32x4 blend4(const i32x4 a, const i32x4 b) {
       yb = permute4<arr[4], arr[5], arr[6], arr[7]>(b);
     }
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // AVX512VL
-    y = _mm_mask_mov_epi32(ya, (u8)make_bit_mask<4, 0x302>(indexs), yb);
+    y = _mm_mask_mov_epi32(ya, u8(make_bit_mask<4, 0x302>(indexs)), yb);
 #elif STADO_INSTRUCTION_SET >= STADO_SSE4_1
     static constexpr u8 mm =
       ((i0 & 4) ? 0x03 : 0) | ((i1 & 4) ? 0x0C : 0) | ((i2 & 4) ? 0x30 : 0) | ((i3 & 4) ? 0xC0 : 0);
@@ -983,7 +983,7 @@ inline TVec lookup16(const TVec index, const TVec table) {
 }
 
 inline i8x16 lookup32(const i8x16 index, const i8x16 table0, const i8x16 table1) {
-#ifdef __XOP__ // AMD XOP instruction set. Use VPPERM
+#ifdef __XOP__ // AMD XOP instruction set. Use vpperm
   return (i8x16)_mm_perm_epi8(table0, table1, index);
 #elif STADO_INSTRUCTION_SET >= STADO_SSSE3
   // make negative index for values >= 16
@@ -1361,7 +1361,7 @@ template<int i0, int i1, int i2, int i3>
 inline void scatter(const i32x4 data, void* destination) {
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // AVX512VL
   __m128i indx = _mm_setr_epi32(i0, i1, i2, i3);
-  __mmask8 mask = u8((i0 >= 0) | ((i1 >= 0) << 1) | ((i2 >= 0) << 2) | ((i3 >= 0) << 3));
+  __mmask8 mask = (i0 >= 0) | ((i1 >= 0) << 1) | ((i2 >= 0) << 2) | ((i3 >= 0) << 3);
   _mm_mask_i32scatter_epi32(destination, mask, indx, data, 4);
 #elif STADO_INSTRUCTION_SET >= STADO_AVX512F
   __m512i indx = _mm512_castsi128_si512(_mm_setr_epi32(i0, i1, i2, i3));
@@ -2121,13 +2121,13 @@ inline u16x8 divide_by_ui(const u16x8 x) {
     x1 = x1 + u16x8(1); // round down mult and compensate by adding 1 to x
   }
   constexpr u16 mult1 = round_down ? mult : mult + 1;
-  const __m128i multv = _mm_set1_epi16((i16)mult1); // broadcast mult
+  const __m128i multv = _mm_set1_epi16(i16(mult1)); // broadcast mult
   __m128i xm = _mm_mulhi_epu16(x1, multv); // high part of 16x16->32 bit unsigned multiplication
   u16x8 q = _mm_srli_epi16(xm, (int)b); // shift right by b
   if constexpr (round_down) {
     Mask<16, 8> overfl = (x1 == u16x8(_mm_setzero_si128())); // check for overflow of x+1
     // deal with overflow (rarely needed)
-    return select(overfl, u16x8(u16(mult1 >> (u16)b)), q);
+    return select(overfl, u16x8(u16(mult1 >> u16(b))), q);
   } else {
     return q; // no overflow possible
   }

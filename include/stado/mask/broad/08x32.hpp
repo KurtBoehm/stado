@@ -56,7 +56,7 @@ struct BroadMask<8, 32> : public i8x32 {
     return {i8x32::get_high()};
   }
   BroadMask& insert(std::size_t index, bool a) {
-    i8x32::insert(index, -(i8)a);
+    i8x32::insert(index, -i8(a));
     return *this;
   }
   // Member function extract a single element from vector

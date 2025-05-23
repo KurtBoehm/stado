@@ -78,7 +78,7 @@ struct LookupMasked<TValue, TIdx, tElementNum> {
 // 64 → 128 bit //
 //////////////////
 
-STADO_LOOKMA(double, u32, 2) {
+STADO_LOOKMA(f64, u32, 2) {
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // AVX512BW
   return _mm_mmask_i32gather_pd(_mm_setzero_pd(), mask, indices.native(), data, 8);
 #elif STADO_INSTRUCTION_SET >= STADO_AVX2
@@ -95,7 +95,7 @@ STADO_LOOKMA(double, u32, 2) {
 // 128 → 64 bit //
 //////////////////
 
-STADO_LOOKMA(float, u64, 2) {
+STADO_LOOKMA(f32, u64, 2) {
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // AVX512BW
   return Out::from_register(
     _mm_mmask_i64gather_ps(_mm_setzero_ps(), mask.native(), indices, data, 4));
@@ -115,7 +115,7 @@ STADO_LOOKMA(float, u64, 2) {
 // 128 bit //
 /////////////
 
-STADO_LOOKMA(float, u32, 4) {
+STADO_LOOKMA(f32, u32, 4) {
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // AVX512BW
   return _mm_mmask_i32gather_ps(_mm_setzero_ps(), mask, indices, data, 4);
 #elif STADO_INSTRUCTION_SET >= STADO_AVX2
@@ -143,7 +143,7 @@ STADO_LOOKMA(u32, u32, 4) {
 #endif
 }
 
-STADO_LOOKMA(double, u64, 2) {
+STADO_LOOKMA(f64, u64, 2) {
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // AVX512BW
   return _mm_mmask_i64gather_pd(_mm_setzero_pd(), mask, indices, data, 8);
 #elif STADO_INSTRUCTION_SET >= STADO_AVX2
@@ -175,7 +175,7 @@ STADO_LOOKMA(u64, u64, 2) {
 // 256 → 128 bit //
 ///////////////////
 
-STADO_LOOKMA(float, u64, 4) {
+STADO_LOOKMA(f32, u64, 4) {
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // AVX512BW
   return _mm256_mmask_i64gather_ps(_mm_setzero_ps(), mask, indices, data, 4);
 #elif STADO_INSTRUCTION_SET >= STADO_AVX2
@@ -187,7 +187,7 @@ STADO_LOOKMA(float, u64, 4) {
 // 256 bit //
 /////////////
 
-STADO_LOOKMA(float, u32, 8) {
+STADO_LOOKMA(f32, u32, 8) {
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // AVX512BW
   return _mm256_mmask_i32gather_ps(_mm256_setzero_ps(), mask, indices, data, 4);
 #else
@@ -203,7 +203,7 @@ STADO_LOOKMA(u32, u32, 8) {
 #endif
 }
 
-STADO_LOOKMA(double, u32, 4) {
+STADO_LOOKMA(f64, u32, 4) {
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // AVX512BW
   return _mm256_mmask_i32gather_pd(_mm256_setzero_pd(), mask, indices, data, 8);
 #else
@@ -211,7 +211,7 @@ STADO_LOOKMA(double, u32, 4) {
 #endif
 }
 
-STADO_LOOKMA(double, u64, 4) {
+STADO_LOOKMA(f64, u64, 4) {
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // AVX512BW
   return _mm256_mmask_i64gather_pd(_mm256_setzero_pd(), mask, indices, data, 8);
 #else
@@ -227,25 +227,25 @@ STADO_LOOKMA(u64, u64, 4) {
                                      8);
 #endif
 }
-#endif // AVX2
+#endif
 
 /////////////
 // 512 bit //
 /////////////
 
 #if STADO_INSTRUCTION_SET >= STADO_AVX512F
-STADO_LOOKMA(float, u32, 16) {
+STADO_LOOKMA(f32, u32, 16) {
   return _mm512_mask_i32gather_ps(_mm512_setzero_ps(), mask, indices, data, 4);
 }
 
-STADO_LOOKMA(double, u32, 8) {
+STADO_LOOKMA(f64, u32, 8) {
   return _mm512_mask_i32gather_pd(_mm512_setzero_pd(), mask, indices, data, 8);
 }
 
-STADO_LOOKMA(double, u64, 8) {
+STADO_LOOKMA(f64, u64, 8) {
   return _mm512_mask_i64gather_pd(_mm512_setzero_pd(), mask, indices, data, 8);
 }
-#endif // AVX512F
+#endif
 
 // 8 and 16 bit indices
 
