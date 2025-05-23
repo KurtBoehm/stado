@@ -3,6 +3,7 @@
 
 // IWYU pragma: begin_exports
 #include "operations/convert-elements.hpp"
+#include "operations/horizontal.hpp"
 #include "operations/part-mask.hpp"
 // IWYU pragma: end_exports
 
