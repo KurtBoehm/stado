@@ -7,6 +7,7 @@
 #include <type_traits>
 
 #include "stado/mask/base.hpp"
+#include "stado/mask/operations/part-mask.hpp"
 
 namespace stado {
 template<std::size_t tElementBits, std::size_t tSize>
@@ -52,7 +53,7 @@ private:
   explicit SubNativeMask(Native native) : native_(native) {}
 
   static Native native_mask() {
-    return create_part_mask<Native>(size);
+    return part_mask<Native>(size);
   }
 
   Native native_;

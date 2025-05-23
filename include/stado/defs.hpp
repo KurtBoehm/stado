@@ -43,6 +43,33 @@ requires(CompleteType<ElementConvertTrait<TFrom, TTo>>)
 inline TTo convert_unsafe(TFrom from) {
   return ElementConvertTrait<TFrom, TTo>::convert(from);
 }
+
+template<std::size_t tBits>
+struct BitIntTrait;
+template<>
+struct BitIntTrait<8> {
+  using Signed = i8;
+  using Unsigned = u8;
+};
+template<>
+struct BitIntTrait<16> {
+  using Signed = i16;
+  using Unsigned = u16;
+};
+template<>
+struct BitIntTrait<32> {
+  using Signed = i32;
+  using Unsigned = u32;
+};
+template<>
+struct BitIntTrait<64> {
+  using Signed = i64;
+  using Unsigned = u64;
+};
+template<std::size_t tBits>
+using BitInt = BitIntTrait<tBits>::Signed;
+template<std::size_t tBits>
+using BitUInt = BitIntTrait<tBits>::Unsigned;
 } // namespace stado
 
 #endif // INCLUDE_STADO_DEFS_HPP
