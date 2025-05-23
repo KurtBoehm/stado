@@ -5,8 +5,8 @@
 #include <cstddef>
 
 #include "stado/instruction-set.hpp"
-#include "stado/mask/broad/base.hpp"
-#include "stado/mask/compact/base.hpp"
+#include "stado/mask/broad.hpp"
+#include "stado/mask/compact.hpp"
 
 namespace stado {
 template<std::size_t tElementBits, std::size_t tSize>
@@ -17,7 +17,6 @@ requires(std::has_single_bit(tElementBits) && std::has_single_bit(tSize))
 using Mask = typename MaskTrait<tElementBits, tSize>::Type;
 
 // 128 bit
-
 template<>
 struct MaskTrait<8, 16> {
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL
@@ -52,7 +51,6 @@ struct MaskTrait<64, 2> {
 };
 
 // 256 bit
-
 #if STADO_INSTRUCTION_SET >= STADO_AVX2
 template<>
 struct MaskTrait<8, 32> {
@@ -92,7 +90,6 @@ struct MaskTrait<64, 4> {
 #endif
 
 // 512 bit
-
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL // AVX512BW
 template<>
 struct MaskTrait<8, 64> {
@@ -102,6 +99,8 @@ template<>
 struct MaskTrait<16, 32> {
   using Type = CompactMask<32>;
 };
+#endif
+#if STADO_INSTRUCTION_SET >= STADO_AVX512F
 template<>
 struct MaskTrait<32, 16> {
   using Type = CompactMask<16>;

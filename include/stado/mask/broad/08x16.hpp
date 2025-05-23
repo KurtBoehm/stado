@@ -13,6 +13,7 @@ namespace stado {
 template<>
 struct BroadMask<8, 16> : public i8x16 {
   using Element = bool;
+  static constexpr std::size_t element_bits = 8;
 
   // Default constructor
   BroadMask() = default;

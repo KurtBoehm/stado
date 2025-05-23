@@ -17,6 +17,7 @@ template<>
 struct BroadMask<16, 16> : public i16x16 {
   using Element = bool;
   using Half = b16x8;
+  static constexpr std::size_t element_bits = 16;
 
   // Default constructor:
   BroadMask() = default;

@@ -1,8 +1,10 @@
 #ifndef INCLUDE_STADO_VECTOR_NATIVE_TYPES_BASE_512_HPP
 #define INCLUDE_STADO_VECTOR_NATIVE_TYPES_BASE_512_HPP
 
+#include "stado/instruction-set.hpp"
 #include "stado/vector/native/types/base-256.hpp"
 
+#if STADO_INSTRUCTION_SET >= STADO_AVX512F
 namespace stado {
 struct si512 {
   using Register = __m512i;
@@ -113,5 +115,6 @@ static inline si512 andnot(const si512 a, const si512 b) {
   return _mm512_andnot_epi32(b, a);
 }
 } // namespace stado
+#endif
 
 #endif // INCLUDE_STADO_VECTOR_NATIVE_TYPES_BASE_512_HPP

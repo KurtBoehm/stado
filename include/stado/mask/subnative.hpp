@@ -4,6 +4,7 @@
 #include <bit>
 #include <cassert>
 #include <cstddef>
+#include <type_traits>
 
 #include "stado/mask/base.hpp"
 
@@ -78,6 +79,13 @@ requires(tElementBits* tElementNum < 128)
 struct MaskTrait<tElementBits, tElementNum> {
   using Type = SubNativeMask<tElementBits, tElementNum>;
 };
+
+template<typename T>
+struct IsSubNativeMaskTrait : public std::false_type {};
+template<std::size_t tElementBits, std::size_t tSize>
+struct IsSubNativeMaskTrait<SubNativeMask<tElementBits, tSize>> : public std::true_type {};
+template<typename T>
+concept AnySubNativeMask = IsSubNativeMaskTrait<T>::value;
 } // namespace stado
 
 #endif // INCLUDE_STADO_MASK_SUBNATIVE_HPP

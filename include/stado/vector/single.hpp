@@ -74,21 +74,21 @@ private:
   T value_{};
 };
 
-#define COLLECTIVIST_ASSIGN_ARITH_OP(OP) \
+#define STADO_ASSIGN_ARITH_OP(OP) \
   template<typename T> \
   inline SingleVector<T>& operator OP(SingleVector<T>& v1, SingleVector<T> v2) { \
     v1.value() OP v2.value(); \
     return v1; \
   }
 
-COLLECTIVIST_ASSIGN_ARITH_OP(+=)
-COLLECTIVIST_ASSIGN_ARITH_OP(-=)
-COLLECTIVIST_ASSIGN_ARITH_OP(*=)
-COLLECTIVIST_ASSIGN_ARITH_OP(/=)
+STADO_ASSIGN_ARITH_OP(+=)
+STADO_ASSIGN_ARITH_OP(-=)
+STADO_ASSIGN_ARITH_OP(*=)
+STADO_ASSIGN_ARITH_OP(/=)
 
-#undef COLLECTIVIST_ASSIGN_ARITH_OP
+#undef STADO_ASSIGN_ARITH_OP
 
-#define COLLECTIVIST_ARITH_OP(OP) \
+#define STADO_ARITH_OP(OP) \
   template<typename T> \
   inline SingleVector<T> operator OP(SingleVector<T> v1, SingleVector<T> v2) { \
     return SingleVector<T>{v1.value() OP v2.value()}; \
@@ -102,14 +102,14 @@ COLLECTIVIST_ASSIGN_ARITH_OP(/=)
     return SingleVector<T>{v1.value() OP v2}; \
   }
 
-COLLECTIVIST_ARITH_OP(+)
-COLLECTIVIST_ARITH_OP(-)
-COLLECTIVIST_ARITH_OP(*)
-COLLECTIVIST_ARITH_OP(/)
+STADO_ARITH_OP(+)
+STADO_ARITH_OP(-)
+STADO_ARITH_OP(*)
+STADO_ARITH_OP(/)
 
-#undef COLLECTIVIST_ARITH_OP
+#undef STADO_ARITH_OP
 
-#define COLLECTIVIST_CMP_OP(OP) \
+#define STADO_CMP_OP(OP) \
   template<typename T> \
   inline SingleMask operator OP(SingleVector<T> v1, SingleVector<T> v2) { \
     return SingleMask{v1.value() OP v2.value()}; \
@@ -123,14 +123,14 @@ COLLECTIVIST_ARITH_OP(/)
     return SingleMask{v1.value() OP v2}; \
   }
 
-COLLECTIVIST_CMP_OP(==)
-COLLECTIVIST_CMP_OP(!=)
-COLLECTIVIST_CMP_OP(<)
-COLLECTIVIST_CMP_OP(>)
-COLLECTIVIST_CMP_OP(<=)
-COLLECTIVIST_CMP_OP(>=)
+STADO_CMP_OP(==)
+STADO_CMP_OP(!=)
+STADO_CMP_OP(<)
+STADO_CMP_OP(>)
+STADO_CMP_OP(<=)
+STADO_CMP_OP(>=)
 
-#undef COLLECTIVIST_CMP_OP
+#undef STADO_CMP_OP
 
 template<typename T>
 inline SingleVector<T> abs(SingleVector<T> v) {
@@ -211,6 +211,13 @@ template<typename T>
 inline SingleVector<T> nmul_add(SingleVector<T> x, SingleVector<T> y, SingleVector<T> z) {
   return SingleVector<T>{detail::fma(-x.value(), y.value(), z.value())};
 }
+
+template<typename T>
+struct IsSingleVectorTrait : public std::false_type {};
+template<typename T>
+struct IsSingleVectorTrait<SingleVector<T>> : public std::true_type {};
+template<typename T>
+concept AnySingleVector = IsSingleVectorTrait<T>::value;
 } // namespace stado
 
 #endif // INCLUDE_STADO_VECTOR_SINGLE_HPP

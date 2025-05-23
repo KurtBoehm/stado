@@ -5,6 +5,7 @@
 #include <cassert>
 #include <climits>
 #include <cstddef>
+#include <type_traits>
 
 #include "stado/mask/subnative.hpp"
 #include "stado/vector/native/base.hpp"
@@ -198,6 +199,13 @@ inline auto lookup(SubNativeVector<T1, tSize> idxs, const T2* ptr) {
   const auto native = lookup_part(idxs.native(), ptr, tSize);
   return SubNativeVector<T2, tSize>::from_native(native);
 }
+
+template<typename T>
+struct IsSubNativeVectorTrait : public std::false_type {};
+template<typename T, std::size_t tSize>
+struct IsSubNativeVectorTrait<SubNativeVector<T, tSize>> : public std::true_type {};
+template<typename T>
+concept AnySubNativeVector = IsSubNativeVectorTrait<T>::value;
 } // namespace stado
 
 #endif // INCLUDE_STADO_VECTOR_SUBNATIVE_HPP

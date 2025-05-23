@@ -23,12 +23,6 @@ template<typename T, std::size_t tSize>
 struct VectorTraitImpl<false, true, false, T, tSize> {
   using Type = SubNativeVector<T, tSize>;
 };
-#if false
-template<typename T, std::size_t tSize>
-struct VectorTraitImpl<false, false, true, T, tSize> {
-  using Type = SuperNativeVector<T, tSize>;
-};
-#endif
 
 template<typename T, std::size_t tSize>
 struct VectorTrait {

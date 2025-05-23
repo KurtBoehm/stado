@@ -18,6 +18,7 @@ struct BroadMask<64, 4> {
   using Register = __m256d;
   using Half = b64x2;
   static constexpr std::size_t size = 4;
+  static constexpr std::size_t element_bits = 64;
 
   // Default constructor:
   BroadMask() = default;

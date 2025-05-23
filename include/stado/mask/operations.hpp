@@ -3,6 +3,7 @@
 
 // IWYU pragma: begin_exports
 #include "operations/convert-elements.hpp"
+#include "operations/lookup-masked.hpp"
 // IWYU pragma: end_exports
 
 #endif // INCLUDE_STADO_MASK_OPERATIONS_HPP

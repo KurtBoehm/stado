@@ -1,6 +1,7 @@
 #ifndef INCLUDE_STADO_MASK_SINGLE_HPP
 #define INCLUDE_STADO_MASK_SINGLE_HPP
 
+#include <concepts>
 #include <cstddef>
 
 #include "stado/mask/base.hpp"
@@ -31,6 +32,9 @@ template<std::size_t tElementBits>
 struct MaskTrait<tElementBits, 1> {
   using Type = SingleMask;
 };
+
+template<typename T>
+concept AnySingleMask = std::same_as<T, SingleMask>;
 } // namespace stado
 
 #endif // INCLUDE_STADO_MASK_SINGLE_HPP

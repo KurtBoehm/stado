@@ -10,6 +10,7 @@
 #include "stado/vector/native.hpp"
 #include "stado/vector/single.hpp"
 #include "stado/vector/subnative.hpp"
+#include "stado/vector/supernative.hpp"
 
 namespace stado {
 #define STADO_CONV_ESC(...) __VA_ARGS__

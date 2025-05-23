@@ -8,6 +8,7 @@
 #include "stado/defs.hpp"
 #include "stado/instruction-set.hpp"
 #include "stado/mask/base.hpp"
+#include "stado/vector/base.hpp"
 #include "stado/vector/native/operations/f32x04.hpp"
 #include "stado/vector/native/operations/f64x02.hpp"
 #include "stado/vector/native/operations/i64x04.hpp"
@@ -16,6 +17,7 @@
 #include "stado/vector/native/types/f64x04.hpp"
 #include "stado/vector/native/types/i32x04.hpp"
 #include "stado/vector/native/types/i64x04.hpp"
+#include "stado/vector/supernative.hpp"
 
 #if STADO_INSTRUCTION_SET >= STADO_AVX
 namespace stado {
@@ -649,7 +651,7 @@ inline f64x4 fraction(const f64x4 a) {
 // n >=  1024 gives +INF
 // n <= -1023 gives 0.0
 // This function will never produce subnormals, and never raise exceptions
-inline f64x4 exp2(const i64x4 n) {
+inline f64x4 exp2(const Vector<i64, 4> n) {
 #if STADO_INSTRUCTION_SET >= STADO_AVX2 // 256 bit integer vectors are available
   const i64x4 t1 = max(n, -0x3FF); // limit to allowed range
   const i64x4 t2 = min(t1, 0x400);
@@ -660,8 +662,7 @@ inline f64x4 exp2(const i64x4 n) {
   return f64x4(exp2(n.get_low()), exp2(n.get_high()));
 #endif
 }
-// inline f64x4 exp2(f64x4 const x); // defined in
-// vectormath_exp.h
+// inline f64x4 exp2(f64x4 const x); // defined in vectormath_exp.h
 
 // Categorization functions
 

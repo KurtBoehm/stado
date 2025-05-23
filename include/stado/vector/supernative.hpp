@@ -110,6 +110,11 @@ private:
 };
 
 template<typename T, std::size_t tSize>
+struct VectorTraitImpl<false, false, true, T, tSize> {
+  using Type = SuperNativeVector<T, tSize>;
+};
+
+template<typename T, std::size_t tSize>
 static T horizontal_add(SuperNativeVector<T, tSize> vec) {
   return horizontal_add(vec.lower()) + horizontal_add(vec.upper());
 }
