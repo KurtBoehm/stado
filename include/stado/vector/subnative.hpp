@@ -17,8 +17,9 @@ struct SubNativeVector {
   static constexpr std::size_t size = tSize;
   static_assert(storage_size % size == 0,
                 "Only element counts that are powers of two are supported!");
+  using Element = T;
   using Native = NativeVector<T, storage_size>;
-  using Register = typename Native::register_type;
+  using Register = typename Native::Register;
 
   SubNativeVector() = default;
 
