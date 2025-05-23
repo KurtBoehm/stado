@@ -5,6 +5,7 @@
 #include "mask/base.hpp"
 #include "mask/broad.hpp"
 #include "mask/compact.hpp"
+#include "mask/concepts.hpp"
 #include "mask/operations.hpp"
 #include "mask/single.hpp"
 #include "mask/subnative.hpp"

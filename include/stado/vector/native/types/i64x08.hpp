@@ -14,7 +14,7 @@
 namespace stado {
 template<typename TDerived, typename T>
 struct x64x8 : public si512 {
-  using Element = T;
+  using Value = T;
   using Half = NativeVector<T, 4>;
   static constexpr std::size_t size = 8;
 

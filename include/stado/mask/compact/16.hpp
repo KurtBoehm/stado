@@ -12,7 +12,7 @@
 namespace stado {
 template<>
 struct CompactMask<16> {
-  using Element = bool;
+  using Value = bool;
   using Register = __mmask16;
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL
   using Half = CompactMask<8>;

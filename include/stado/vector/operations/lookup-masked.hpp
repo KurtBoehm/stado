@@ -24,32 +24,32 @@ struct LookupMasked;
 template<typename TMask, typename TIdxVec, typename TValue>
 requires(TMask::size == TIdxVec::size &&
          (AnyCompactMask<TMask> || TMask::element_bits == CHAR_BIT * sizeof(TValue)) &&
-         requires { sizeof(LookupMasked<TValue, typename TIdxVec::Element, TIdxVec::size>); })
+         requires { sizeof(LookupMasked<TValue, typename TIdxVec::Value, TIdxVec::size>); })
 inline auto lookup_masked(const TMask mask, const TIdxVec indices, const TValue* data) {
-  using Out = LookupMasked<TValue, typename TIdxVec::Element, TIdxVec::size>;
+  using Out = LookupMasked<TValue, typename TIdxVec::Value, TIdxVec::size>;
   return Out::op(mask, indices, data);
 }
 
-template<typename TValue, typename TIdx, std::size_t tElementNum>
-requires(AnySubNativeVector<Vector<TIdx, tElementNum>> &&
-         AnySubNativeMask<Mask<sizeof(TValue) * CHAR_BIT, tElementNum>>)
-struct LookupMasked<TValue, TIdx, tElementNum> {
-  using IndexVec = Vector<TIdx, tElementNum>;
-  using ValueMask = Mask<sizeof(TValue) * CHAR_BIT, tElementNum>;
-  using Out = Vector<TValue, tElementNum>;
+template<typename TValue, typename TIdx, std::size_t tValueNum>
+requires(AnySubNativeVector<Vector<TIdx, tValueNum>> &&
+         AnySubNativeMask<Mask<sizeof(TValue) * CHAR_BIT, tValueNum>>)
+struct LookupMasked<TValue, TIdx, tValueNum> {
+  using IndexVec = Vector<TIdx, tValueNum>;
+  using ValueMask = Mask<sizeof(TValue) * CHAR_BIT, tValueNum>;
+  using Out = Vector<TValue, tValueNum>;
 
   static Out op(ValueMask mask, IndexVec indices, const TValue* data) {
     return Out::from_native(lookup_masked(mask.masked_native(), indices.native(), data));
   }
 };
 
-template<typename TValue, typename TIdx, std::size_t tElementNum>
-requires(AnySingleVector<Vector<TIdx, tElementNum>> &&
-         AnySingleMask<Mask<sizeof(TValue) * CHAR_BIT, tElementNum>>)
-struct LookupMasked<TValue, TIdx, tElementNum> {
-  using IndexVec = Vector<TIdx, tElementNum>;
-  using ValueMask = Mask<sizeof(TValue) * CHAR_BIT, tElementNum>;
-  using Out = Vector<TValue, tElementNum>;
+template<typename TValue, typename TIdx, std::size_t tValueNum>
+requires(AnySingleVector<Vector<TIdx, tValueNum>> &&
+         AnySingleMask<Mask<sizeof(TValue) * CHAR_BIT, tValueNum>>)
+struct LookupMasked<TValue, TIdx, tValueNum> {
+  using IndexVec = Vector<TIdx, tValueNum>;
+  using ValueMask = Mask<sizeof(TValue) * CHAR_BIT, tValueNum>;
+  using Out = Vector<TValue, tValueNum>;
 
   static Out op(ValueMask mask, IndexVec indices, const TValue* data) {
     if (mask.value()) {

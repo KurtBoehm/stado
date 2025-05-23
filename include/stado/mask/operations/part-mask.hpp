@@ -13,17 +13,17 @@
 namespace stado {
 template<typename T>
 struct PartMaskCreator;
-template<std::size_t tElementBits, std::size_t tSize>
-struct PartMaskCreator<BroadMask<tElementBits, tSize>> {
-  using Mask = BroadMask<tElementBits, tSize>;
-  using Element = BitInt<tElementBits>;
-  using Base = NativeVector<Element, tSize>;
+template<std::size_t tValueBits, std::size_t tSize>
+struct PartMaskCreator<BroadMask<tValueBits, tSize>> {
+  using Mask = BroadMask<tValueBits, tSize>;
+  using Value = BitInt<tValueBits>;
+  using Base = NativeVector<Value, tSize>;
 
   static Mask create(const std::size_t part) {
     const Base index_vec = []<std::size_t... tIdxs>(std::index_sequence<tIdxs...> /*idxs*/) {
-      return Base{Element(tIdxs)...};
+      return Base{Value(tIdxs)...};
     }(std::make_index_sequence<tSize>{});
-    return Base{Element(part)} > index_vec;
+    return Base{Value(part)} > index_vec;
   }
 };
 template<std::size_t tSize>

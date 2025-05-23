@@ -26,23 +26,23 @@ template<typename T>
 concept CompleteType = IsCompleteTrait<T>::value;
 
 template<typename TFrom, typename TTo>
-struct ElementConvertTrait;
+struct ValueConvertTrait;
 template<typename T>
-struct ElementConvertTrait<T, T> {
+struct ValueConvertTrait<T, T> {
   static constexpr bool is_safe = true;
   static constexpr T convert(T v) {
     return v;
   }
 };
 template<typename TTo, typename TFrom>
-requires(CompleteType<ElementConvertTrait<TFrom, TTo>> && ElementConvertTrait<TFrom, TTo>::is_safe)
+requires(CompleteType<ValueConvertTrait<TFrom, TTo>> && ValueConvertTrait<TFrom, TTo>::is_safe)
 inline TTo convert_safe(TFrom from) {
-  return ElementConvertTrait<TFrom, TTo>::convert(from);
+  return ValueConvertTrait<TFrom, TTo>::convert(from);
 }
 template<typename TTo, typename TFrom>
-requires(CompleteType<ElementConvertTrait<TFrom, TTo>>)
+requires(CompleteType<ValueConvertTrait<TFrom, TTo>>)
 inline TTo convert_unsafe(TFrom from) {
-  return ElementConvertTrait<TFrom, TTo>::convert(from);
+  return ValueConvertTrait<TFrom, TTo>::convert(from);
 }
 
 template<std::size_t tBits>

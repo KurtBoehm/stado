@@ -28,8 +28,8 @@ inline SingleMask operator&(SingleMask m1, SingleMask m2) {
   return SingleMask{m1.value() && m2.value()};
 }
 
-template<std::size_t tElementBits>
-struct MaskTrait<tElementBits, 1> {
+template<std::size_t tValueBits>
+struct MaskTrait<tValueBits, 1> {
   using Type = SingleMask;
 };
 

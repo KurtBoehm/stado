@@ -15,7 +15,7 @@
 namespace stado {
 template<>
 struct BroadMask<8, 32> : public i8x32 {
-  using Element = bool;
+  using Value = bool;
   using Half = b8x16;
   static constexpr std::size_t element_bits = 8;
 

@@ -4,6 +4,7 @@
 #include <array>
 #include <bit>
 #include <cstddef>
+#include <type_traits>
 
 #include "stado/vector/base.hpp"
 
@@ -11,7 +12,7 @@ namespace stado {
 template<typename T, std::size_t tSize>
 requires(std::has_single_bit(tSize))
 struct SuperNativeVector {
-  using Element = T;
+  using Value = T;
   static constexpr std::size_t size = tSize;
   static constexpr std::size_t storage_size = size / 2;
   using Half = Vector<T, storage_size>;
@@ -110,14 +111,21 @@ private:
 };
 
 template<typename T, std::size_t tSize>
+static T horizontal_add(SuperNativeVector<T, tSize> vec) {
+  return horizontal_add(vec.get_low()) + horizontal_add(vec.get_high());
+}
+
+template<typename T, std::size_t tSize>
 struct VectorTraitImpl<false, false, true, T, tSize> {
   using Type = SuperNativeVector<T, tSize>;
 };
 
+template<typename T>
+struct IsSuperNativeVectorTrait : public std::false_type {};
 template<typename T, std::size_t tSize>
-static T horizontal_add(SuperNativeVector<T, tSize> vec) {
-  return horizontal_add(vec.get_low()) + horizontal_add(vec.get_high());
-}
+struct IsSuperNativeVectorTrait<SuperNativeVector<T, tSize>> : public std::true_type {};
+template<typename T>
+concept AnySuperNativeVector = IsSuperNativeVectorTrait<T>::value;
 } // namespace stado
 
 #endif // INCLUDE_STADO_VECTOR_SUPERNATIVE_HPP

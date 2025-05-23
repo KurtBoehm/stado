@@ -14,7 +14,7 @@ namespace stado {
 // Compact vector of 32 booleans
 template<>
 struct CompactMask<32> {
-  using Element = bool;
+  using Value = bool;
   using Register = __mmask32;
   using Half = CompactMask<16>;
   static constexpr std::size_t size = 32;

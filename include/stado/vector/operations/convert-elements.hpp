@@ -17,13 +17,13 @@ namespace stado {
 
 #define STADO_CONV(FROM, TO, SAFE) \
   template<> \
-  struct ElementConvertTrait<STADO_CONV_ESC FROM, STADO_CONV_ESC TO> { \
+  struct ValueConvertTrait<STADO_CONV_ESC FROM, STADO_CONV_ESC TO> { \
     using From = STADO_CONV_ESC FROM; \
     using To = STADO_CONV_ESC TO; \
     static constexpr bool is_safe = SAFE; \
     static inline STADO_CONV_ESC TO convert(STADO_CONV_ESC FROM v); \
   }; \
-  STADO_CONV_ESC TO ElementConvertTrait<STADO_CONV_ESC FROM, STADO_CONV_ESC TO>::convert( \
+  STADO_CONV_ESC TO ValueConvertTrait<STADO_CONV_ESC FROM, STADO_CONV_ESC TO>::convert( \
     const STADO_CONV_ESC FROM v)
 
 #define STADO_CONV_SAFE(FROM, TO) STADO_CONV(FROM, TO, true)
@@ -185,26 +185,26 @@ STADO_CONV_UNSAFE((f64x8), (f32x8)) {
 
 template<typename TFrom, typename TTo>
 requires(!std::same_as<TFrom, TTo>)
-struct ElementConvertTrait<SingleVector<TFrom>, SingleVector<TTo>> {
+struct ValueConvertTrait<SingleVector<TFrom>, SingleVector<TTo>> {
   static constexpr bool is_safe = requires(TFrom v) { TTo{v}; };
   static SingleVector<TTo> convert(SingleVector<TFrom> v) {
     return SingleVector<TTo>(v.value());
   }
 };
 
-template<typename T1, std::size_t tElementNum1, typename T2, std::size_t tElementNum2>
+template<typename T1, std::size_t tValueNum1, typename T2, std::size_t tValueNum2>
 requires(!std::same_as<T1, T2>)
-struct ElementConvertTrait<SubNativeVector<T1, tElementNum1>, SubNativeVector<T2, tElementNum2>> {
+struct ValueConvertTrait<SubNativeVector<T1, tValueNum1>, SubNativeVector<T2, tValueNum2>> {
   static constexpr std::size_t extended_num = 128 / (CHAR_BIT * sizeof(T2));
-  using From = SubNativeVector<T1, tElementNum1>;
+  using From = SubNativeVector<T1, tValueNum1>;
   using FromEx = SubNativeVector<T1, extended_num>;
-  using To = SubNativeVector<T2, tElementNum2>;
+  using To = SubNativeVector<T2, tValueNum2>;
   using ToEx = NativeVector<T2, extended_num>;
-  static constexpr bool is_safe = ElementConvertTrait<FromEx, ToEx>::is_safe;
+  static constexpr bool is_safe = ValueConvertTrait<FromEx, ToEx>::is_safe;
 
   static To convert(From v) {
     const auto vex = FromEx::from_native(v.native());
-    const auto native = ElementConvertTrait<FromEx, ToEx>::convert(vex);
+    const auto native = ValueConvertTrait<FromEx, ToEx>::convert(vex);
     return To::from_native(native);
   }
 };

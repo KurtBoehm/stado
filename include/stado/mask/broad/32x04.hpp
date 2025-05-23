@@ -12,7 +12,7 @@
 namespace stado {
 template<>
 struct BroadMask<32, 4> : public i32x4 {
-  using Element = bool;
+  using Value = bool;
   static constexpr std::size_t element_bits = 32;
 
   // Default constructor:

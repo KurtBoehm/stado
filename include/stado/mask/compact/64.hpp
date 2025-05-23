@@ -13,7 +13,7 @@
 namespace stado {
 template<>
 struct CompactMask<64> {
-  using Element = bool;
+  using Value = bool;
   using Register = __mmask64;
   using Half = CompactMask<32>;
   static constexpr std::size_t size = 64;

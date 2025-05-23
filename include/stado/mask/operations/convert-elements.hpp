@@ -12,11 +12,11 @@ namespace stado {
 
 #define STADO_CONV_SAFE(FROM, TO) \
   template<> \
-  struct ElementConvertTrait<STADO_CONV_ESC FROM, STADO_CONV_ESC TO> { \
+  struct ValueConvertTrait<STADO_CONV_ESC FROM, STADO_CONV_ESC TO> { \
     static constexpr bool is_safe = true; \
     static inline STADO_CONV_ESC TO convert(STADO_CONV_ESC FROM m); \
   }; \
-  STADO_CONV_ESC TO ElementConvertTrait<STADO_CONV_ESC FROM, STADO_CONV_ESC TO>::convert( \
+  STADO_CONV_ESC TO ValueConvertTrait<STADO_CONV_ESC FROM, STADO_CONV_ESC TO>::convert( \
     const STADO_CONV_ESC FROM m)
 
 #if STADO_INSTRUCTION_SET >= STADO_AVX512SKL

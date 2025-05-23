@@ -9,12 +9,12 @@
 #include "stado/mask/compact.hpp"
 
 namespace stado {
-template<std::size_t tElementBits, std::size_t tSize>
+template<std::size_t tValueBits, std::size_t tSize>
 struct MaskTrait;
 
-template<std::size_t tElementBits, std::size_t tSize>
-requires(std::has_single_bit(tElementBits) && std::has_single_bit(tSize))
-using Mask = typename MaskTrait<tElementBits, tSize>::Type;
+template<std::size_t tValueBits, std::size_t tSize>
+requires(std::has_single_bit(tValueBits) && std::has_single_bit(tSize))
+using Mask = typename MaskTrait<tValueBits, tSize>::Type;
 
 // 128 bit
 template<>

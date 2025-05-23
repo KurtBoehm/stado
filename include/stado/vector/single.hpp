@@ -12,7 +12,7 @@ namespace stado {
 template<typename T>
 requires(std::is_trivial_v<T>)
 struct SingleVector {
-  using Element = T;
+  using Value = T;
   static constexpr std::size_t size = 1;
 
   static SingleVector expand_zero(T value) {

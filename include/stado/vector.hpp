@@ -3,6 +3,7 @@
 
 // IWYU pragma: begin_exports
 #include "vector/base.hpp"
+#include "vector/concepts.hpp"
 #include "vector/native.hpp"
 #include "vector/operations.hpp"
 #include "vector/single.hpp"

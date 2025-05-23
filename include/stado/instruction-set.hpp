@@ -285,7 +285,7 @@ class ConstUint {};
 // template for producing quiet NAN
 template<typename TVec>
 static inline TVec nan_vec(u32 payload = 0x100) {
-  if constexpr (std::is_same_v<typename TVec::Element, f64>) {
+  if constexpr (std::is_same_v<typename TVec::Value, f64>) {
     // f64
     union {
       u64 q;

@@ -18,7 +18,7 @@ struct SubNativeVector {
   static constexpr std::size_t size = tSize;
   static_assert(storage_size % size == 0,
                 "Only element counts that are powers of two are supported!");
-  using Element = T;
+  using Value = T;
   using Native = NativeVector<T, storage_size>;
   using Register = typename Native::Register;
 
@@ -146,25 +146,25 @@ STADO_LOGIC(>)
 STADO_LOGIC(<=)
 STADO_LOGIC(>=)
 
-template<std::size_t tElementBits, typename T, std::size_t tSize>
-requires(tElementBits == CHAR_BIT * sizeof(T))
-inline auto select(SubNativeMask<tElementBits, tSize> mask, SubNativeVector<T, tSize> v1,
+template<std::size_t tValueBits, typename T, std::size_t tSize>
+requires(tValueBits == CHAR_BIT * sizeof(T))
+inline auto select(SubNativeMask<tValueBits, tSize> mask, SubNativeVector<T, tSize> v1,
                    SubNativeVector<T, tSize> v2) {
   const auto native = select(mask.native(), v1.native(), v2.native());
   return SubNativeVector<T, tSize>::from_native(native);
 }
 
-template<std::size_t tElementBits, typename T, std::size_t tSize>
-requires(tElementBits == CHAR_BIT * sizeof(T))
-inline auto if_add(SubNativeMask<tElementBits, tSize> mask, SubNativeVector<T, tSize> v1,
+template<std::size_t tValueBits, typename T, std::size_t tSize>
+requires(tValueBits == CHAR_BIT * sizeof(T))
+inline auto if_add(SubNativeMask<tValueBits, tSize> mask, SubNativeVector<T, tSize> v1,
                    SubNativeVector<T, tSize> v2) {
   const auto native = if_add(mask.native(), v1.native(), v2.native());
   return SubNativeVector<T, tSize>::from_native(native);
 }
 
-template<std::size_t tElementBits, typename T, std::size_t tSize>
-requires(tElementBits == CHAR_BIT * sizeof(T))
-inline auto if_div(SubNativeMask<tElementBits, tSize> mask, SubNativeVector<T, tSize> v1,
+template<std::size_t tValueBits, typename T, std::size_t tSize>
+requires(tValueBits == CHAR_BIT * sizeof(T))
+inline auto if_div(SubNativeMask<tValueBits, tSize> mask, SubNativeVector<T, tSize> v1,
                    SubNativeVector<T, tSize> v2) {
   const auto native = if_div(mask.masked_native(), v1.native(), v2.native());
   return SubNativeVector<T, tSize>::from_native(native);

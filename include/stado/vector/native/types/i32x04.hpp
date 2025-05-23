@@ -14,7 +14,7 @@
 namespace stado {
 template<typename TDerived, typename T>
 struct x32x4 : public si128 {
-  using Element = T;
+  using Value = T;
   static constexpr std::size_t size = 4;
 
   // Default constructor:

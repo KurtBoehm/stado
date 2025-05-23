@@ -13,7 +13,7 @@
 namespace stado {
 template<>
 struct BroadMask<32, 8> {
-  using Element = bool;
+  using Value = bool;
   using Register = __m256;
   using Half = b32x4;
   static constexpr std::size_t size = 8;
