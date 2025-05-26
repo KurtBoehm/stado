@@ -83,27 +83,37 @@ using Vec = stado::Vector<Val, 4>;
   return _mm_maskload_ps(ptr, stado::part_mask<stado::Mask<32, 4>>(num));
 }
 
-#define DIST1 std::uniform_int_distribution<stado::u64> uniform_dist(0, Vec::size);
-#define DIST2 std::uniform_int_distribution<stado::u64> uniform_dist(1, Vec::size - 1);
-#define DIST3 std::uniform_int_distribution<stado::u64> uniform_dist(1, 1);
+#define DIST_full std::uniform_int_distribution<stado::u64> uniform_dist(0, Vec::size);
+#define DIST_redu std::uniform_int_distribution<stado::u64> uniform_dist(1, Vec::size - 1);
+#define DIST_1 std::uniform_int_distribution<stado::u64> uniform_dist(1, 1);
+#define DIST_2 std::uniform_int_distribution<stado::u64> uniform_dist(2, 2);
+#define DIST_3 std::uniform_int_distribution<stado::u64> uniform_dist(3, 3);
 
-#define BM_OP(NUM) \
-  static void bm_op##NUM(benchmark::State& state) { \
+#define BM_OP(NUM, DIST) \
+  static void bm_op##NUM##_##DIST(benchmark::State& state) { \
     pcg_extras::seed_seq_from<std::random_device> seed_source; \
     pcg32 rng(seed_source); \
-    DIST1; \
+    DIST_##DIST; \
     std::array<Val, Vec::size> arr{}; \
     for (auto _ : state) { \
       benchmark::DoNotOptimize(op##NUM(arr.data(), uniform_dist(rng))); \
     } \
   } \
-  BENCHMARK(bm_op##NUM);
+  BENCHMARK(bm_op##NUM##_##DIST);
 
-BM_OP(1)
-BM_OP(2)
-BM_OP(3)
-BM_OP(4)
-BM_OP(5)
-BM_OP(6)
-BM_OP(7)
+#define BM_OPS(DIST) \
+  BM_OP(1, DIST) \
+  BM_OP(2, DIST) \
+  BM_OP(3, DIST) \
+  BM_OP(4, DIST) \
+  BM_OP(5, DIST) \
+  BM_OP(6, DIST) \
+  BM_OP(7, DIST)
+
+BM_OPS(full)
+BM_OPS(redu)
+BM_OPS(1)
+BM_OPS(2)
+BM_OPS(3)
+
 BENCHMARK_MAIN();
