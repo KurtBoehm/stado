@@ -11,6 +11,9 @@ pc.generate(
   description: 'Generic SIMD classes and functions',
 )
 
+if get_option('benchmark')
+  subdir('benchmark')
+endif
 if get_option('test')
   subdir('test')
 endif
