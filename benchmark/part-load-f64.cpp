@@ -26,7 +26,7 @@ using Vec = stado::Vector<Val, 2>;
 }
 [[gnu::noinline]] auto op3(const Val* ptr, std::size_t num) {
   std::array<Val, Vec::size> buf{};
-  std::memcpy(buf.data(), ptr, num);
+  std::memcpy(buf.data(), ptr, 8 * num);
   return Vec{}.load(buf.data());
 }
 [[gnu::noinline]] auto op4(const Val* ptr, std::size_t num) {
@@ -59,8 +59,9 @@ using Vec = stado::Vector<Val, 2>;
   BM_OP(4, DIST) \
   BM_OP(5, DIST)
 
+// NOLINTBEGIN
 BM_OPS(full)
 BM_OPS(redu)
 BM_OPS(1)
-
 BENCHMARK_MAIN();
+// NOLINTEND
