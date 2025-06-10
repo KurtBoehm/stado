@@ -5,6 +5,9 @@ benchmark_dep = dependency('benchmark')
 pcg_cpp_dep = dependency('pcg-cpp')
 
 foreach name, args : {
+  'cvt128-u32-f64': all_args,
+  'cvt256-u16-u64': all_args,
+  'cvt256-u64-i64': all_args,
   'extend': all_args,
   'extend-lookup': all_args,
   'extend-lookup-mean': all_args,
