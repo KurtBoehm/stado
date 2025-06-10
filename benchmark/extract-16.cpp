@@ -1,0 +1,72 @@
+#include <array>
+#include <cstddef>
+#include <cstring>
+#include <random>
+
+#include "benchmark/benchmark.h"
+#include "pcg_extras.hpp"
+#include "pcg_random.hpp"
+
+#include "stado/stado.hpp"
+
+using Val = stado::i16;
+using Vec = stado::Vector<Val, 8>;
+
+[[gnu::noinline]] auto op1(Vec v, std::size_t i) {
+  return v.extract(i);
+}
+[[gnu::noinline]] auto op2(Vec v, std::size_t i) {
+  const stado::Vector<stado::u8, 16> offsets(0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1);
+  return _mm_extract_epi16(_mm_shuffle_epi8(v, offsets + i), 0);
+}
+[[gnu::noinline]] auto op3(Vec v, std::size_t i) {
+  return _mm_extract_epi16(_mm_shuffle_epi8(v, _mm_set1_epi16(((2 * i + 1) << 8) + 2 * i)), 0);
+}
+[[gnu::noinline]] auto op4(Vec v, std::size_t i) {
+  std::array<Val, Vec::size> buf{};
+  v.store(buf.data());
+  return buf[i];
+}
+
+#define DIST_full std::uniform_int_distribution<stado::u64> uniform_dist(0, Vec::size - 1);
+#define DIST_0 std::uniform_int_distribution<stado::u64> uniform_dist(0, 0);
+#define DIST_1 std::uniform_int_distribution<stado::u64> uniform_dist(1, 1);
+#define DIST_2 std::uniform_int_distribution<stado::u64> uniform_dist(2, 2);
+#define DIST_3 std::uniform_int_distribution<stado::u64> uniform_dist(3, 3);
+#define DIST_4 std::uniform_int_distribution<stado::u64> uniform_dist(4, 4);
+#define DIST_5 std::uniform_int_distribution<stado::u64> uniform_dist(5, 5);
+#define DIST_6 std::uniform_int_distribution<stado::u64> uniform_dist(6, 6);
+#define DIST_7 std::uniform_int_distribution<stado::u64> uniform_dist(7, 7);
+
+#define BM_OP(NUM, DIST) \
+  static void bm_op##NUM##_##DIST(benchmark::State& state) { \
+    pcg_extras::seed_seq_from<std::random_device> seed_source; \
+    pcg32 rng(seed_source); \
+    DIST_##DIST; \
+    std::uniform_int_distribution<Val> fdist{}; \
+    for (auto _ : state) { \
+      Vec v{fdist(rng), fdist(rng), fdist(rng), fdist(rng), \
+            fdist(rng), fdist(rng), fdist(rng), fdist(rng)}; \
+      benchmark::DoNotOptimize(op##NUM(v, uniform_dist(rng))); \
+    } \
+  } \
+  BENCHMARK(bm_op##NUM##_##DIST);
+
+#define BM_OPS(DIST) \
+  BM_OP(1, DIST) \
+  BM_OP(2, DIST) \
+  BM_OP(3, DIST) \
+  BM_OP(4, DIST)
+
+// NOLINTBEGIN
+BM_OPS(full)
+BM_OPS(0)
+BM_OPS(1)
+BM_OPS(2)
+BM_OPS(3)
+BM_OPS(4)
+BM_OPS(5)
+BM_OPS(6)
+BM_OPS(7)
+BENCHMARK_MAIN();
+// NOLINTEND
