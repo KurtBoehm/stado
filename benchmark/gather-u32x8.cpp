@@ -14,21 +14,24 @@
 
 using Val = stado::f32;
 using Idx = stado::u32;
-inline constexpr std::size_t size = 4;
+inline constexpr std::size_t size = 8;
+inline constexpr std::size_t nidx = 8192;
 using stado::Vector;
 
 [[gnu::noinline]] Vector<Val, size> op0(std::span<const Val> data, Vector<Idx, size> idxs) {
-  return {data[idxs[0]], data[idxs[1]], data[idxs[2]], data[idxs[3]]};
+  return {data[idxs[0]], data[idxs[1]], data[idxs[2]], data[idxs[3]],
+          data[idxs[4]], data[idxs[5]], data[idxs[6]], data[idxs[7]]};
 }
 [[gnu::noinline]] Vector<Val, size> op1(std::span<const Val> data, Vector<Idx, size> idxs) {
   constexpr Idx limit = Idx{1} << 31;
   if (data.size() >= limit) {
-    return _mm_i32gather_ps(data.data() + limit, idxs ^ limit, 4);
+    return _mm256_i32gather_ps(data.data() + limit, idxs ^ limit, 4);
   }
-  return _mm_i32gather_ps(data.data(), idxs, 4);
+  return _mm256_i32gather_ps(data.data(), idxs, 4);
 }
 [[gnu::noinline]] Vector<Val, size> op2(std::span<const Val> data, Vector<Idx, size> idxs) {
-  return _mm256_i64gather_ps(data.data(), _mm256_cvtepu32_epi64(idxs), 4);
+  return {_mm256_i64gather_ps(data.data(), _mm256_cvtepu32_epi64(idxs.get_low()), 4),
+          _mm256_i64gather_ps(data.data(), _mm256_cvtepu32_epi64(idxs.get_high()), 4)};
 }
 
 static void bm_base(benchmark::State& state, auto op) {
@@ -43,11 +46,14 @@ static void bm_base(benchmark::State& state, auto op) {
   }
 
   std::uniform_int_distribution<Idx> idist{0, data_size - 1};
+  std::array<Idx, nidx> idx_arr{};
+  std::generate(idx_arr.begin(), idx_arr.end(), [&] { return idist(rng); });
+
+  std::size_t i = 0;
   for (auto _ : state) {
-    const std::array<Idx, size> indices{idist(rng), idist(rng), idist(rng), idist(rng)};
-    const std::size_t num = std::ranges::max(indices);
-    const Vector<Idx, size> idxs{indices[0], indices[1], indices[2], indices[3]};
-    benchmark::DoNotOptimize(op(std::span{data.get(), num}, idxs));
+    const auto idxs = Vector<Idx, size>{}.load(idx_arr.data() + i);
+    benchmark::DoNotOptimize(op(std::span{data.get(), stado::horizontal_max(idxs) + 1}, idxs));
+    i = (i + 8) % nidx;
   }
 }
 static void bm0(benchmark::State& state) {
