@@ -6,6 +6,7 @@ omp_dep = dependency('openmp')
 pcg_cpp_dep = dependency('pcg-cpp')
 
 foreach name, args : {
+  'cvt-mask': all_args,
   'cvt128-u32-f64': all_args,
   'cvt256-u16-u64': all_args,
   'cvt256-u64-i64': all_args,
