@@ -141,6 +141,10 @@ template<typename T>
 inline T horizontal_add(SingleVector<T> v) {
   return v.value();
 }
+template<typename T>
+inline T horizontal_max(SingleVector<T> v) {
+  return v.value();
+}
 
 template<typename T>
 inline SingleVector<T> if_add(SingleMask m, SingleVector<T> v1, SingleVector<T> v2) {
