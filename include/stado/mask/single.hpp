@@ -8,6 +8,8 @@
 
 namespace stado {
 struct SingleMask {
+  static constexpr std::size_t size = 1;
+
   explicit SingleMask(bool value) : value_(value) {}
 
   void insert(std::size_t index, bool value) {

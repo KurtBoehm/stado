@@ -16,7 +16,7 @@ using u32 = uint32_t;
 
 [[gnu::noinline]] __m128i op1(__m128i v) {
   // return _mm_packus_epi16(_mm_packus_epi16(v, _mm_setzero_si128()), _mm_setzero_si128());
-  return _mm_packus_epi16(v, _mm_setzero_si128());
+  return _mm_packs_epi16(v, _mm_setzero_si128());
 }
 [[gnu::noinline]] __m128i op2(__m128i v) {
   return _mm_shuffle_epi8(
